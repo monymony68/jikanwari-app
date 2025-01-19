@@ -1,0 +1,58 @@
+.cell {
+    padding: 0.5rem;
+    min-height: 100px;
+    vertical-align: top;
+    background-color: white;
+    border: 1px dashed #FB8F55;
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+    max-width: 80px;
+}
+
+.plus-horizontal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 1px;
+    background-color: #FB8F55;
+}
+
+.plus-vertical {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 20px;
+    background-color: #FB8F55;
+}
+
+/* Cell Content Styles */
+.cell-content {
+    padding: 5px;
+    font-size: 12px;
+    text-align: left;
+    color: #FFF;
+    white-space: pre-line;
+}
+
+.cell-subject {
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-size: 25px;
+    text-align: center;
+}
+
+.cell-detail {
+    color: #FFF;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+.cell-detail:last-of-type {
+    margin-bottom: 0;
+}

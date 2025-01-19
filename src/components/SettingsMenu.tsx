@@ -1,0 +1,473 @@
+import { useState } from "react";
+import type { Settings, Subject, SchoolInfo } from "../types";
+import { DEFAULT_SUBJECTS } from "../constants";
+
+interface SettingsMenuProps {
+  settings: Settings;
+  onSave: (newSettings: Settings) => void;
+  onClose: () => void;
+  onBack: () => void;
+}
+
+export default function SettingsMenu({
+  settings,
+  onSave,
+  onClose,
+  onBack,
+}: SettingsMenuProps) {
+  const [localSettings, setLocalSettings] = useState<Settings>({
+    ...settings,
+    subjects: settings.subjects.map((subject, index) => ({
+      ...subject,
+      order: index, // 明示的な順序を追加
+    })),
+  });
+
+  const [draggedItem, setDraggedItem] = useState<{
+    id: string;
+    type: "main" | "sub";
+    parentId?: string;
+  } | null>(null);
+
+  // 学校情報の更新
+  const handleSchoolInfoChange = (field: keyof SchoolInfo, value: string) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      schoolInfo: {
+        ...prev.schoolInfo,
+        [field]: value,
+      },
+    }));
+  };
+
+  // メイン教科の追加
+  const handleAddSubject = () => {
+    // 既存メイン教科の最大order値を取得（新しい教科を最後尾にするため）
+    const maxOrder = Math.max(
+      ...localSettings.subjects
+        .filter((s) => !s.parentId)
+        .map((s) => s.order ?? -1),
+      -1
+    );
+    // 新しい教科オブジェクトを作成
+    const newSubject: Subject = {
+      id: crypto.randomUUID(), //ユニークIDを生成
+      name: "",
+      color: { bg: "#CCCCCC", text: "#FFF" },
+      order: maxOrder + 1, //新しい教科を最後尾に追加
+    };
+    // 設定に新しいメイン教科を追加
+    setLocalSettings((prev) => ({
+      ...prev,
+      subjects: [...prev.subjects, newSubject],
+    }));
+  };
+
+  // サブ教科の追加
+  const handleAddSubSubject = (parentId: string) => {
+    //親教科を検索（サブ教科に親教科の色情報を継承させ、親教科との関連付けを明確にするため）
+    const parentSubject = localSettings.subjects.find((s) => s.id === parentId);
+
+    //既存のサブ教科をフィルタリングし昇順に並び替え
+    const subSubjects = localSettings.subjects
+      .filter((s) => s.parentId === parentId) //指定された親IDを持つサブ教科のみを抽出
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)); //order値で昇順にソート
+
+    //新しいサブ教科オブジェクトを作成
+    const newSubject: Subject = {
+      id: crypto.randomUUID(),
+      name: "",
+      color: {
+        bg: parentSubject?.color.bg ?? "#CCCCCC",
+        text: parentSubject?.color.text ?? "#FFF",
+      },
+      parentId,
+      order:
+        subSubjects.length > 0
+          ? Math.max(...subSubjects.map((s) => s.order ?? 0)) + 1
+          : 0,
+    };
+
+    //設定に新しいサブ教科を追加
+    setLocalSettings((prev) => ({
+      ...prev,
+      subjects: [...prev.subjects, newSubject],
+    }));
+  };
+
+  // 教科の更新
+  const handleSubjectUpdate = (id: string, updates: Partial<Subject>) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      subjects: prev.subjects.map((subject) =>
+        subject.id === id ? { ...subject, ...updates } : subject
+      ),
+    }));
+  };
+
+  // 教科の削除
+  const handleDeleteSubject = (id: string) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      subjects: prev.subjects.filter(
+        (subject) => subject.id !== id && subject.parentId !== id
+      ),
+    }));
+  };
+
+  // ドラッグ開始
+  const handleDragStart = (
+    e: React.DragEvent,
+    id: string,
+    type: "main" | "sub",
+    parentId?: string
+  ) => {
+    // サブ教科の場合は必ず親IDを指定
+    if (type === "sub" && !parentId) {
+      e.preventDefault();
+      return;
+    }
+
+    // イベント伝播を防止
+    e.stopPropagation();
+
+    // カスタムデータを設定
+    const dragData = JSON.stringify({
+      id,
+      type,
+      parentId: type === "sub" ? parentId : undefined,
+    });
+    e.dataTransfer?.setData("text/plain", dragData);
+
+    // ステート更新
+    setDraggedItem({ id, type, parentId });
+  };
+
+  // ドラッグオーバー時の処理
+  const handleDragOver = (
+    e: React.DragEvent,
+    type: "main" | "sub",
+    parentId?: string
+  ) => {
+    // サブ教科の場合、同じ親のアイテムにのみドラッグを許可
+    const dragData = JSON.parse(e.dataTransfer?.getData("text/plain") || "{}");
+
+    if (type === "sub" && dragData.type === "sub") {
+      if (dragData.parentId !== parentId) {
+        e.preventDefault();
+        return;
+      }
+    }
+
+    e.preventDefault();
+  };
+
+  // ドロップ時の処理
+  const handleDrop = (
+    e: React.DragEvent,
+    targetId: string,
+    targetType: "main" | "sub",
+    targetParentId?: string
+  ) => {
+    e.preventDefault();
+
+    // ドラッグデータを安全に取得
+    const dragData = JSON.parse(e.dataTransfer?.getData("text/plain") || "{}");
+    const {
+      id: draggedId,
+      type: draggedType,
+      parentId: draggedParentId,
+    } = dragData;
+
+    // 同じIDへのドロップは無視
+    if (draggedId === targetId) {
+      setDraggedItem(null);
+      return;
+    }
+
+    // メイン教科の並び替え
+    if (draggedType === "main" && targetType === "main") {
+      setLocalSettings((prev) => {
+        const subjects = [...prev.subjects].filter((s) => !s.parentId);
+
+        const draggedIndex = subjects.findIndex((s) => s.id === draggedId);
+        const targetIndex = subjects.findIndex((s) => s.id === targetId);
+
+        // 要素を移動
+        const [removed] = subjects.splice(draggedIndex, 1);
+        subjects.splice(targetIndex, 0, removed);
+
+        // 順序を更新
+        return {
+          ...prev,
+          subjects: [
+            ...subjects.map((s, index) => ({
+              ...s,
+              order: index,
+            })),
+            ...prev.subjects.filter((s) => s.parentId),
+          ],
+        };
+      });
+    }
+
+    // サブ教科の並び替え
+    if (
+      draggedType === "sub" &&
+      targetType === "sub" &&
+      draggedParentId === targetParentId
+    ) {
+      setLocalSettings((prev) => {
+        // 対象の親を持つサブ教科のみをフィルタリング
+        const subSubjects = prev.subjects.filter(
+          (s) => s.parentId === draggedParentId
+        );
+
+        const draggedIndex = subSubjects.findIndex((s) => s.id === draggedId);
+        const targetIndex = subSubjects.findIndex((s) => s.id === targetId);
+
+        // 要素を移動
+        const [removed] = subSubjects.splice(draggedIndex, 1);
+        subSubjects.splice(targetIndex, 0, removed);
+
+        // 順序を更新
+        const updatedSubSubjects = subSubjects.map((s, index) => ({
+          ...s,
+          order: index,
+          parentId: draggedParentId,
+        }));
+
+        // 他のサブジェクトと結合
+        return {
+          ...prev,
+          subjects: [
+            ...prev.subjects.filter(
+              (s) => !s.parentId || s.parentId !== draggedParentId
+            ),
+            ...updatedSubSubjects,
+          ],
+        };
+      });
+    }
+
+    // ドラッグ状態をリセット
+    setDraggedItem(null);
+  };
+
+  // 教科色をデフォルトに戻す
+  const handleResetColors = () => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      subjects: prev.subjects.map((subject) => {
+        const defaultSubject = DEFAULT_SUBJECTS.find(
+          (s) => s.name === subject.name
+        );
+        return defaultSubject
+          ? { ...subject, color: defaultSubject.color }
+          : subject;
+      }),
+    }));
+  };
+
+  return (
+    <div className="settings-popup">
+      <div className="settings-outer">
+        <button className="close-button" onClick={onClose}>
+          <div className="close-button-line1" />
+          <div className="close-button-line2" />
+        </button>
+
+        <div className="settings-header">設定</div>
+
+        <div className="settings-content">
+          {/* 学校情報の設定 */}
+          <section className="settings-section">
+            <h3 className="settings-section-title">学校情報</h3>
+            <div className="form-group">
+              <label>学校名</label>
+              <input
+                type="text"
+                value={localSettings.schoolInfo.schoolName}
+                onChange={(e) =>
+                  handleSchoolInfoChange("schoolName", e.target.value)
+                }
+                className="settings-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>科名</label>
+              <input
+                type="text"
+                value={localSettings.schoolInfo.department}
+                onChange={(e) =>
+                  handleSchoolInfoChange("department", e.target.value)
+                }
+                className="settings-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>クラス</label>
+              <input
+                type="text"
+                value={localSettings.schoolInfo.className}
+                onChange={(e) =>
+                  handleSchoolInfoChange("className", e.target.value)
+                }
+                className="settings-input"
+              />
+            </div>
+          </section>
+
+          {/* 教科の設定 */}
+          <section className="settings-section">
+            <div className="settings-section-header">
+              <h3 className="settings-section-title">教科設定</h3>
+              <button
+                onClick={handleResetColors}
+                className="reset-colors-button"
+              >
+                色をデフォルトに戻す
+              </button>
+            </div>
+            <div className="subjects-list">
+              {localSettings.subjects
+                .filter((subject) => !subject.parentId)
+                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                .map((subject) => (
+                  <div
+                    key={subject.id}
+                    className={`subject-item ${
+                      draggedItem?.id === subject.id ? "dragging" : ""
+                    }`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, subject.id, "main")}
+                    onDragOver={(e) => handleDragOver(e, "main")}
+                    onDrop={(e) => handleDrop(e, subject.id, "main")}
+                  >
+                    <div className="subject-header">
+                      <input
+                        type="text"
+                        value={subject.name}
+                        placeholder="教科名を入力"
+                        onChange={(e) =>
+                          handleSubjectUpdate(subject.id, {
+                            name: e.target.value,
+                          })
+                        }
+                        className="subject-name-input"
+                      />
+                      <div className="color-inputs">
+                        <div className="color-input-group">
+                          <label>背景色</label>
+                          <input
+                            type="color"
+                            value={subject.color.bg}
+                            onChange={(e) =>
+                              handleSubjectUpdate(subject.id, {
+                                color: { ...subject.color, bg: e.target.value },
+                              })
+                            }
+                            className="color-picker"
+                          />
+                        </div>
+                        <div className="color-input-group">
+                          <label>文字色</label>
+                          <input
+                            type="color"
+                            value={subject.color.text}
+                            onChange={(e) =>
+                              handleSubjectUpdate(subject.id, {
+                                color: {
+                                  ...subject.color,
+                                  text: e.target.value,
+                                },
+                              })
+                            }
+                            className="color-picker"
+                          />
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteSubject(subject.id)}
+                        className="delete-button"
+                      >
+                        削除
+                      </button>
+                    </div>
+
+                    {/* サブ教科のリスト */}
+                    <div className="sub-subjects">
+                      {localSettings.subjects
+                        .filter((sub) => sub.parentId === subject.id)
+                        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                        .map((subSubject) => (
+                          <div
+                            key={subSubject.id}
+                            className={`sub-subject-item ${
+                              draggedItem?.id === subSubject.id
+                                ? "dragging"
+                                : ""
+                            }`}
+                            draggable
+                            onDragStart={(e) =>
+                              handleDragStart(
+                                e,
+                                subSubject.id,
+                                "sub",
+                                subject.id
+                              )
+                            }
+                            onDragOver={(e) =>
+                              handleDragOver(e, "sub", subject.id)
+                            }
+                            onDrop={(e) =>
+                              handleDrop(e, subSubject.id, "sub", subject.id)
+                            }
+                          >
+                            <input
+                              type="text"
+                              value={subSubject.name}
+                              placeholder="サブ教科名を入力"
+                              onChange={(e) =>
+                                handleSubjectUpdate(subSubject.id, {
+                                  name: e.target.value,
+                                })
+                              }
+                              className="subject-name-input"
+                            />
+                            <button
+                              onClick={() => handleDeleteSubject(subSubject.id)}
+                              className="delete-button"
+                            >
+                              削除
+                            </button>
+                          </div>
+                        ))}
+                      <button
+                        onClick={() => handleAddSubSubject(subject.id)}
+                        className="add-sub-button"
+                      >
+                        サブ教科を追加
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+            <button onClick={handleAddSubject} className="add-button">
+              新しい教科を追加
+            </button>
+          </section>
+        </div>
+
+        <div className="button-container">
+          <button className="back-button" onClick={onBack}>
+            戻る
+          </button>
+          <button className="save-button" onClick={() => onSave(localSettings)}>
+            保存
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

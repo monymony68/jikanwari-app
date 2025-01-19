@@ -1,0 +1,165 @@
+/* Dialog Styles */
+.dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow: auto;
+    padding: 20px 0;
+}
+
+.dialog-content {
+    width: 90%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px #444;
+    padding: 25px;
+    position: relative;
+    margin: auto;
+}
+
+.close-button {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.close-button-line1 {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: #444;
+    transform: rotate(45deg);
+    top: 50%;
+}
+
+.close-button-line2 {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: #444;
+    transform: rotate(-45deg);
+    top: 50%;
+}
+
+.dialog-header {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* Form Styles */
+.form-container {
+    background-color: #FCF1D7;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.label {
+    width: 20%;
+    color: #FB8F55;
+    font-weight: bold;
+    text-align: center;
+}
+
+.input {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: inherit;
+    box-sizing: border-box;
+}
+
+.textarea {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 38px;
+    resize: none;
+    font-family: inherit;
+    font-size: inherit;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.save-button {
+    background-color: #FB8F55;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 40px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.delete-button {
+    background-color: #666;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 40px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.subject-select {
+    width: 40%;
+    padding: 10px;
+    margin: 0 30% 20px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.subject-select-default {
+    background-color: #FFF;
+    color: #000;
+}
+
+.subject-option {
+    background-color: #FFF;
+    color: #000;
+}

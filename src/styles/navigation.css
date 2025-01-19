@@ -1,0 +1,73 @@
+.calendar-icon {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    background-color: white;
+    border-radius: 50%;
+    padding: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.hamburger {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1;
+}
+
+.hamburger-line {
+    display: block;
+    width: 32px;
+    height: 2px;
+    background-color: #444;
+}
+
+/* Week Navigation Buttons */
+.week-button {
+    background-color: #FB8F55;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 47%;
+    font-size: 14px;
+    line-height: 1.2;
+    padding: 5px;
+    z-index: 2;
+}
+
+.week-button-text {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.week-button-arrow {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.prev-week-button {
+    left: 5px;
+}
+
+.next-week-button {
+    right: 5px;
+}

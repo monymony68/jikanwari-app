@@ -1,0 +1,52 @@
+/* Timetable Styles */
+.timetable-container {
+    background-color: white;
+    border-radius: 20px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.timetable {
+    width: 100%;
+    border-spacing: 0.5rem;
+    border-collapse: separate;
+    min-width: 600px;
+}
+
+.day-header {
+    color: #FB8F55;
+    border: 2px solid #FB8F55;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 20px;
+    letter-spacing: 5px;
+    text-align: center;
+    min-width: 80px;
+}
+
+.day-header.today {
+    color: #FFF;
+    background-color: #FB8F55;
+}
+
+.time-slot-container {
+    color: #FB8F55;
+    font-weight: bold;
+    border: 2px solid #FB8F55;
+    border-radius: 6px;
+    padding: 0 8px 8px;
+    text-align: center;
+}
+
+.period-number {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.period-time {
+    font-size: 13px;
+    line-height: 1rem;
+    letter-spacing: 2px;
+}
