@@ -345,54 +345,70 @@ export default function SettingsMenu({
                     onDrop={(e) => handleDrop(e, subject.id, "main")}
                   >
                     <div className="subject-header">
+                      <div>
+                        <input
+                          type="text"
+                          value={subject.name}
+                          placeholder="教科名を入力"
+                          onChange={(e) =>
+                            handleSubjectUpdate(subject.id, {
+                              name: e.target.value,
+                            })
+                          }
+                          className="subject-name-input"
+                        />
+                        <div className="color-inputs">
+                          <div className="color-input-group">
+                            <label>背景色</label>
+                            <input
+                              type="color"
+                              value={subject.color.bg}
+                              onChange={(e) =>
+                                handleSubjectUpdate(subject.id, {
+                                  color: {
+                                    ...subject.color,
+                                    bg: e.target.value,
+                                  },
+                                })
+                              }
+                              className="color-picker"
+                            />
+                          </div>
+                          <div className="color-input-group">
+                            <label>文字色</label>
+                            <input
+                              type="color"
+                              value={subject.color.text}
+                              onChange={(e) =>
+                                handleSubjectUpdate(subject.id, {
+                                  color: {
+                                    ...subject.color,
+                                    text: e.target.value,
+                                  },
+                                })
+                              }
+                              className="color-picker"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteSubject(subject.id)}
+                          className="delete-button"
+                        >
+                          削除
+                        </button>
+                      </div>
                       <input
                         type="text"
-                        value={subject.name}
-                        placeholder="教科名を入力"
+                        value={subject.teacher || ""}
+                        placeholder="担当教師"
                         onChange={(e) =>
                           handleSubjectUpdate(subject.id, {
-                            name: e.target.value,
+                            teacher: e.target.value,
                           })
                         }
-                        className="subject-name-input"
+                        className="teacher-input"
                       />
-                      <div className="color-inputs">
-                        <div className="color-input-group">
-                          <label>背景色</label>
-                          <input
-                            type="color"
-                            value={subject.color.bg}
-                            onChange={(e) =>
-                              handleSubjectUpdate(subject.id, {
-                                color: { ...subject.color, bg: e.target.value },
-                              })
-                            }
-                            className="color-picker"
-                          />
-                        </div>
-                        <div className="color-input-group">
-                          <label>文字色</label>
-                          <input
-                            type="color"
-                            value={subject.color.text}
-                            onChange={(e) =>
-                              handleSubjectUpdate(subject.id, {
-                                color: {
-                                  ...subject.color,
-                                  text: e.target.value,
-                                },
-                              })
-                            }
-                            className="color-picker"
-                          />
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => handleDeleteSubject(subject.id)}
-                        className="delete-button"
-                      >
-                        削除
-                      </button>
                     </div>
 
                     {/* サブ教科のリスト */}
@@ -424,23 +440,38 @@ export default function SettingsMenu({
                               handleDrop(e, subSubject.id, "sub", subject.id)
                             }
                           >
+                            <div>
+                              <input
+                                type="text"
+                                value={subSubject.name}
+                                placeholder="サブ教科名を入力"
+                                onChange={(e) =>
+                                  handleSubjectUpdate(subSubject.id, {
+                                    name: e.target.value,
+                                  })
+                                }
+                                className="subject-name-input"
+                              />
+                              <button
+                                onClick={() =>
+                                  handleDeleteSubject(subSubject.id)
+                                }
+                                className="delete-button"
+                              >
+                                削除
+                              </button>
+                            </div>
                             <input
                               type="text"
-                              value={subSubject.name}
-                              placeholder="サブ教科名を入力"
+                              value={subSubject.teacher || ""}
+                              placeholder="担当教師"
                               onChange={(e) =>
                                 handleSubjectUpdate(subSubject.id, {
-                                  name: e.target.value,
+                                  teacher: e.target.value,
                                 })
                               }
-                              className="subject-name-input"
+                              className="teacher-input"
                             />
-                            <button
-                              onClick={() => handleDeleteSubject(subSubject.id)}
-                              className="delete-button"
-                            >
-                              削除
-                            </button>
                           </div>
                         ))}
                       <button

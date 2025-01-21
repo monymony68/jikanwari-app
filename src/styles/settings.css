@@ -42,7 +42,6 @@
 	margin: 0;
 }
 
-
 .subject-item {
 	background-color: #fff;
 	border-radius: 4px;
@@ -60,14 +59,18 @@
 
 .subject-header {
 	display: flex;
-	align-items: center;
 	gap: 15px;
 	padding: 5px 10px;
 	margin-bottom: 10px;
+	flex-direction: column;
 }
 
-.sub-subjects .subject-name-input {
-	width: 25em;
+.subject-header>div {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	gap: 15px;
+	justify-content: space-between;
 }
 
 .sub-subject-item {
@@ -79,16 +82,37 @@
 	border-radius: 4px;
 	border: 1px solid transparent;
 	transition: all 0.2s ease;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
 }
 
-.subject-name-input {
-	flex: 1;
+.sub-subject-item>div {
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.subject-name-input,
+input.teacher-input {
+	width: 15em;
 	padding: 5px;
 	border: 1px solid #ddd;
 	border-radius: 4px;
 	font-size: 18px;
-	margin-right: 1rem;
+
 }
+
+.subject-name-input {
+	width: 22em;
+}
+
+/*
+input.teacher-input {
+
+}
+*/
 
 .color-inputs {
 	display: flex;
@@ -104,6 +128,10 @@
 .color-input-group label {
 	font-size: 0.9em;
 	color: #666;
+}
+
+.settings-content .form-group:first-of-type {
+	margin-top: 10px;
 }
 
 .settings-content .form-group label {
@@ -132,6 +160,7 @@ input.settings-input {
 	background-color: #fcf1d7;
 	color: #fb8f55;
 	font-weight: bold;
+	margin-top: 1em;
 }
 
 /*  削除ボタン　元はform.cssのものを引用 */
@@ -153,16 +182,18 @@ input.settings-input {
 
 .reset-colors-button {
 	padding: 6px 8px;
-	background-color: #666;
-	color: #FFF;
+	/*background-color: #666;
+	color: #FFF;*/
 	border: none;
 	border-radius: 4px;
 	font-size: 1rem;
+	background-color: #ffffff;
+	color: #fb8f55;
 }
 
 .color-picker {
 	padding: 0;
-	width: 40px;
+	width: 25px;
 	height: 25px;
 	border: none;
 	background: none;
@@ -236,4 +267,8 @@ input.settings-input {
 .sub-subject-item.drag-over {
 	border: 2px dashed #FB8F55;
 	background-color: rgba(251, 143, 85, 0.1);
+}
+
+.sub-subjects .subject-name-input {
+	width: 84.5%;
 }

@@ -31,7 +31,7 @@ export default function TimetableCell({
     >
       {data ? (
         <div className="cell-content">
-          <div className="cell-subject">{data.subject}</div>
+          <div className="cell-subject">{data.subSubject || data.subject}</div>
           {data.content && (
             <div className="cell-detail">内容: {data.content}</div>
           )}

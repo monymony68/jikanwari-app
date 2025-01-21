@@ -1,4 +1,4 @@
-import { type ChangeEvent } from "react";
+import { type ChangeEvent, useEffect } from "react";
 import type { ClassData, DayInfo, Subject } from "../types";
 
 type ClassFormProps = {
@@ -23,7 +23,29 @@ export default function ClassForm({
   onInputChange,
   subjects,
 }: ClassFormProps) {
-  const selectedSubject = subjects.find((s) => s.name === formData.subject);
+  // メイン教科とサブ教科の分離
+  const mainSubjects = subjects.filter((s) => !s.parentId);
+  const selectedMainSubject = subjects.find((s) => s.name === formData.subject);
+  const subSubjects = subjects.filter(
+    (s) => s.parentId === selectedMainSubject?.id
+  );
+
+  // 教師の自動入力
+  useEffect(() => {
+    if (
+      !formData.subSubject &&
+      selectedMainSubject?.teacher &&
+      !formData.teacher
+    ) {
+      // サブ教科が選択されていない場合のみ、メイン教科の教師名を自動入力
+      onInputChange("teacher", selectedMainSubject.teacher);
+    }
+  }, [
+    selectedMainSubject,
+    formData.teacher,
+    formData.subSubject,
+    onInputChange,
+  ]);
 
   //テキストエリアのレンダリング関数を追加
   const renderTextArea = (field: keyof ClassData, label: string) => {
@@ -62,22 +84,72 @@ export default function ClassForm({
           {selectedPeriod.period}時間目
         </div>
 
-        <select
-          className="subject-select"
-          value={formData.subject}
-          style={{
-            backgroundColor: selectedSubject?.color.bg || "#FFF",
-            color: selectedSubject?.color.text || "#000",
-          }}
-          onChange={(e) => onInputChange("subject", e.target.value)}
-        >
-          <option value="">教科を選択</option>
-          {subjects.map((subject) => (
-            <option key={subject.id} value={subject.name}>
-              {subject.name}
-            </option>
-          ))}
-        </select>
+        <div className="subject-select-container">
+          {/* メイン教科選択 */}
+          <select
+            className="subject-select"
+            value={formData.subject}
+            onChange={(e) => {
+              onInputChange("subject", e.target.value);
+              // 選択された教科の教師情報を取得
+              const subject = subjects.find((s) => s.name === e.target.value);
+              // 教師が設定されている場合はその値を、されていない場合は空文字をセット
+              onInputChange("teacher", subject?.teacher || "");
+              // サブ教科の選択をリセット
+              onInputChange("subSubject", "");
+            }}
+            style={{
+              backgroundColor: selectedMainSubject?.color.bg || "#FFF",
+              color: selectedMainSubject?.color.text || "#000",
+              border: selectedMainSubject ? "none" : "1px solid #ddd",
+            }}
+          >
+            <option value="">教科を選択</option>
+            {mainSubjects.map((subject) => (
+              <option key={subject.id} value={subject.name}>
+                {subject.name}
+              </option>
+            ))}
+          </select>
+
+          {/* サブ教科選択（メイン教科選択時のみ表示） */}
+          {formData.subject && subSubjects.length > 0 && (
+            <div className="sub-subject-wrapper">
+              <div className="sub-subject-label">サブ教科</div>
+              <div className="sub-subject-select-container">
+                <select
+                  className="sub-subject-select"
+                  value={formData.subSubject || ""}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    onInputChange("subSubject", selectedValue);
+                    const selectedSubSubject = subjects.find(
+                      (s) => s.name === selectedValue
+                    );
+                    // selectedSubSubjectがundefinedの場合（選択解除時）はメイン教科の教師名を設定
+                    // それ以外の場合（サブ教科選択時）は、そのサブ教科の教師名を設定（未設定なら空文字列）
+                    const teacherName = !selectedValue
+                      ? selectedMainSubject?.teacher ?? ""
+                      : selectedSubSubject?.teacher ?? "";
+
+                    onInputChange("teacher", teacherName);
+                  }}
+                  style={{
+                    borderColor: selectedMainSubject?.color.bg || "#ddd",
+                    color: selectedMainSubject?.color.bg || "#000",
+                  }}
+                >
+                  <option value="">選択してください</option>
+                  {subSubjects.map((subject) => (
+                    <option key={subject.id} value={subject.name}>
+                      {subject.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="form-container">
           <div className="form-group">
@@ -86,6 +158,21 @@ export default function ClassForm({
               className="input"
               value={formData.teacher}
               onChange={(e) => onInputChange("teacher", e.target.value)}
+              readOnly={Boolean(
+                (formData.subSubject &&
+                  subjects.find((s) => s.name === formData.subSubject)
+                    ?.teacher) ||
+                  (!formData.subSubject && selectedMainSubject?.teacher)
+              )}
+              style={{
+                backgroundColor:
+                  (!formData.subSubject && !selectedMainSubject?.teacher) ||
+                  (formData.subSubject &&
+                    !subjects.find((s) => s.name === formData.subSubject)
+                      ?.teacher)
+                    ? "#fff"
+                    : "#f5f5f5",
+              }}
             />
           </div>
 

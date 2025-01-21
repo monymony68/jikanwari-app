@@ -11,12 +11,12 @@ export interface DayInfo {
 
 export interface ClassData {
   subject: string; // 教科
+  subSubject?: string; // サブ教科
   teacher: string; // 担当教師
   content: string; // 授業内容
   location: string; // 場所
   materials: string; // 必要物
   homework: string; // 宿題
-  subSubject?: string; // サブ教科
 }
 
 export interface CellData {
@@ -38,6 +38,7 @@ export interface Subject {
     bg: string; // 背景色
     text: string; // 文字色
   };
+  teacher?: string; // 担当教師
   parentId?: string; // サブ教科の親教科のID
   order?: number; // 教科の並び順
 }

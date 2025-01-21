@@ -97,6 +97,15 @@
     font-family: inherit;
     font-size: inherit;
     box-sizing: border-box;
+    background-color: #fff;
+    /* デフォルトの背景色を設定 */
+    transition: background-color 0.3s ease;
+    /* スムーズな切り替えのためのトランジション */
+}
+
+.input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
 }
 
 .textarea {
@@ -143,15 +152,16 @@
 }
 
 .subject-select {
-    width: 40%;
-    padding: 10px;
-    margin: 0 30% 20px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+    width: 50%;
+    padding: 16px;
+    margin: 0 25% 20px;
+    border: none;
+    border-radius: 8px;
     font-size: 30px;
     font-weight: bold;
     text-align: center;
     cursor: pointer;
+    transition: opacity 0.3s ease;
 }
 
 .subject-select-default {
@@ -162,4 +172,81 @@
 .subject-option {
     background-color: #FFF;
     color: #000;
+}
+
+.subject-select-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.main-subject-select,
+.sub-subject-select {
+    width: 40%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.subject-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.sub-subject-wrapper {
+    /*background: #F7F7F7;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 15px auto;
+    width: 90%;
+    max-width: 400px;*/
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 20px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+.sub-subject-inner {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sub-subject-label {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.sub-subject-select-container {
+    width: 66%;
+    margin: 0 auto;
+}
+
+.sub-subject-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: normal;
+    text-align: center;
+    cursor: pointer;
+    background-color: white;
+    transition: all 0.3s ease;
 }
