@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 //↓componentsフォルダ内の各コンポーネントをインポート
 import CalendarComponent from "./components/Calendar";
 import TimetableCell from "./components/TimetableCell";
@@ -12,10 +12,46 @@ import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 //↓cssファイルをインポート
 import "./styles/index.css";
 
+// ローカルストレージのキーを定数として定義
+const STORAGE_KEYS = {
+  SETTINGS: "timetable_settings",
+  CELL_DATA: "timetable_cell_data",
+  CURRENT_WEEK: "timetable_current_week",
+  SELECTED_DATE: "timetable_selected_date",
+} as const;
+
 function App() {
-  // 状態管理
-  const [currentWeekStart, setCurrentWeekStart] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  // 状態の初期化をローカルストレージから行う
+  // 状態の初期化をローカルストレージから行う
+  const [currentWeekStart, setCurrentWeekStart] = useState(() => {
+    const savedWeek = localStorage.getItem(STORAGE_KEYS.CURRENT_WEEK);
+    return savedWeek ? new Date(savedWeek) : new Date();
+  });
+
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const savedDate = localStorage.getItem(STORAGE_KEYS.SELECTED_DATE);
+    return savedDate ? new Date(savedDate) : new Date();
+  });
+
+  const [cellData, setCellData] = useState<CellData>(() => {
+    const savedCellData = localStorage.getItem(STORAGE_KEYS.CELL_DATA);
+    return savedCellData ? JSON.parse(savedCellData) : {};
+  });
+  // デフォルトの科目で初期設定を作成
+  const [settings, setSettings] = useState<Settings>(() => {
+    const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+    return savedSettings
+      ? JSON.parse(savedSettings)
+      : {
+          schoolInfo: {
+            schoolName: "福井高校",
+            department: "普通科",
+            className: "1年1組",
+          },
+          subjects: DEFAULT_SUBJECTS,
+        };
+  });
+
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,7 +60,6 @@ function App() {
     day: DayInfo;
     period: number;
   } | null>(null);
-  const [cellData, setCellData] = useState<CellData>({});
   const [formData, setFormData] = useState<ClassData>({
     subject: "",
     teacher: "",
@@ -33,15 +68,29 @@ function App() {
     materials: "",
     homework: "",
   });
-  // デフォルトの科目で初期設定を作成
-  const [settings, setSettings] = useState<Settings>({
-    schoolInfo: {
-      schoolName: "福武高校",
-      department: "普通科",
-      className: "1-1",
-    },
-    subjects: DEFAULT_SUBJECTS, // デフォルトの教科リストを初期値として使用
-  });
+
+  // データが変更されたときにローカルストレージに保存
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.CELL_DATA, JSON.stringify(cellData));
+  }, [cellData]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEYS.CURRENT_WEEK,
+      currentWeekStart.toISOString()
+    );
+  }, [currentWeekStart]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEYS.SELECTED_DATE,
+      selectedDate.toISOString()
+    );
+  }, [selectedDate]);
 
   // 曜日情報の生成
   const getDaysOfWeek = (startDate: Date): DayInfo[] => {
@@ -96,6 +145,29 @@ function App() {
     );
     setIsDialogOpen(true);
   };
+
+  // データが変更されたときにローカルストレージに保存
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.CELL_DATA, JSON.stringify(cellData));
+  }, [cellData]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEYS.CURRENT_WEEK,
+      currentWeekStart.toISOString()
+    );
+  }, [currentWeekStart]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEYS.SELECTED_DATE,
+      selectedDate.toISOString()
+    );
+  }, [selectedDate]);
 
   const handleInputChange = (field: keyof ClassData, value: string) => {
     setFormData((prev) => ({
