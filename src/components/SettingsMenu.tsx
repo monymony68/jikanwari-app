@@ -461,17 +461,51 @@ export default function SettingsMenu({
                                 削除
                               </button>
                             </div>
-                            <input
-                              type="text"
-                              value={subSubject.teacher || ""}
-                              placeholder="担当教師"
-                              onChange={(e) =>
-                                handleSubjectUpdate(subSubject.id, {
-                                  teacher: e.target.value,
-                                })
-                              }
-                              className="teacher-input"
-                            />
+                            <div className="teacher-input-container">
+                              <input
+                                type="text"
+                                value={
+                                  subSubject.useParentTeacher
+                                    ? subject.teacher || ""
+                                    : subSubject.teacher || ""
+                                }
+                                placeholder="担当教師"
+                                onChange={(e) =>
+                                  handleSubjectUpdate(subSubject.id, {
+                                    teacher: e.target.value,
+                                  })
+                                }
+                                className="teacher-input"
+                                disabled={subSubject.useParentTeacher}
+                                style={{
+                                  backgroundColor: subSubject.useParentTeacher
+                                    ? "#f5f5f5"
+                                    : "#ffffff",
+                                }}
+                              />
+                              <div className="checkbox-container">
+                                <input
+                                  type="checkbox"
+                                  id={`useParentTeacher-${subSubject.id}`}
+                                  checked={subSubject.useParentTeacher}
+                                  onChange={(e) => {
+                                    handleSubjectUpdate(subSubject.id, {
+                                      useParentTeacher: e.target.checked,
+                                      teacher: e.target.checked
+                                        ? subject.teacher
+                                        : "",
+                                    });
+                                  }}
+                                  className="checkbox-input"
+                                />
+                                <label
+                                  htmlFor={`useParentTeacher-${subSubject.id}`}
+                                  className="checkbox-label"
+                                >
+                                  メイン教科と同一
+                                </label>
+                              </div>
+                            </div>
                           </div>
                         ))}
                       <button
