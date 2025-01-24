@@ -84,7 +84,6 @@
 	transition: all 0.2s ease;
 	display: flex;
 	flex-direction: column;
-	gap: 15px;
 }
 
 .sub-subject-item>div:first-of-type {
