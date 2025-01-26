@@ -20,7 +20,7 @@ const STORAGE_KEYS = {
   SELECTED_DATE: "timetable_selected_date",
 } as const;
 
-function App() {
+export default function App() {
   // 状態の初期化をローカルストレージから行う
   // 状態の初期化をローカルストレージから行う
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
@@ -376,5 +376,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
