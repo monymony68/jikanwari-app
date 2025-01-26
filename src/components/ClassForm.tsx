@@ -47,6 +47,39 @@ export default function ClassForm({
     onInputChange,
   ]);
 
+  const renderTeacherInput = () => {
+    if (!formData.subject) return null;
+
+    const selectedMainSubject = subjects.find(
+      (s) => s.name === formData.subject
+    );
+    const selectedSubSubject = formData.subSubject
+      ? subjects.find((s) => s.name === formData.subSubject)
+      : null;
+
+    // 教師が設定されていない場合は非表示
+    if (
+      (!selectedSubSubject && !selectedMainSubject?.teacher) ||
+      (selectedSubSubject &&
+        !selectedSubSubject.teacher &&
+        !selectedSubSubject.useParentTeacher)
+    ) {
+      return null;
+    }
+
+    return (
+      <div className="form-group">
+        <label className="label">担当</label>
+        <input
+          className="input"
+          value={formData.teacher}
+          readOnly
+          style={{ backgroundColor: "#f5f5f5" }}
+        />
+      </div>
+    );
+  };
+
   //テキストエリアのレンダリング関数を追加
   const renderTextArea = (field: keyof ClassData, label: string) => {
     const handleTextAreaInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -152,30 +185,7 @@ export default function ClassForm({
         </div>
 
         <div className="form-container">
-          <div className="form-group">
-            <label className="label">担当</label>
-            <input
-              className="input"
-              value={formData.teacher}
-              onChange={(e) => onInputChange("teacher", e.target.value)}
-              readOnly={Boolean(
-                (formData.subSubject &&
-                  subjects.find((s) => s.name === formData.subSubject)
-                    ?.teacher) ||
-                  (!formData.subSubject && selectedMainSubject?.teacher)
-              )}
-              style={{
-                backgroundColor:
-                  (!formData.subSubject && !selectedMainSubject?.teacher) ||
-                  (formData.subSubject &&
-                    !subjects.find((s) => s.name === formData.subSubject)
-                      ?.teacher)
-                    ? "#fff"
-                    : "#f5f5f5",
-              }}
-            />
-          </div>
-
+          {renderTeacherInput()}
           {renderTextArea("content", "内容")}
           {renderTextArea("location", "場所")}
           {renderTextArea("materials", "必要物")}

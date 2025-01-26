@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 //↓componentsフォルダ内の各コンポーネントをインポート
 import CalendarComponent from "./components/Calendar";
 import TimetableCell from "./components/TimetableCell";
@@ -9,8 +9,6 @@ import { TIME_SLOTS, DEFAULT_SUBJECTS } from "./constants";
 import type { DayInfo, ClassData, CellData, Settings } from "./types";
 //↓アイコンライブラリ「lucide-react」でカレンダーアイコン、矢印アイコンをインポート
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
-//↓cssファイルをインポート
-import "./styles/index.css";
 
 // ローカルストレージのキーを定数として定義
 const STORAGE_KEYS = {
@@ -27,6 +25,41 @@ export default function App() {
     const savedWeek = localStorage.getItem(STORAGE_KEYS.CURRENT_WEEK);
     return savedWeek ? new Date(savedWeek) : new Date();
   });
+
+  // 曜日情報の生成
+  const isSameDay = useCallback((date1: Date, date2: Date) => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }, []);
+
+  const getDaysOfWeek = useCallback(
+    (startDate: Date): DayInfo[] => {
+      const days = ["日", "月", "火", "水", "木", "金", "土"];
+      const today = new Date();
+      const monday = new Date(startDate);
+      monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+
+      return Array.from({ length: 6 }, (_, index) => {
+        const date = new Date(monday);
+        date.setDate(monday.getDate() + index);
+
+        return {
+          date: `${date.getMonth() + 1}/${date.getDate()}`,
+          day: days[date.getDay()],
+          isToday: isSameDay(date, today),
+        };
+      });
+    },
+    [isSameDay]
+  );
+
+  const weekDays = useMemo(
+    () => getDaysOfWeek(currentWeekStart),
+    [currentWeekStart, getDaysOfWeek]
+  );
 
   const [selectedDate, setSelectedDate] = useState(() => {
     const savedDate = localStorage.getItem(STORAGE_KEYS.SELECTED_DATE);
@@ -91,38 +124,6 @@ export default function App() {
       selectedDate.toISOString()
     );
   }, [selectedDate]);
-
-  // 曜日情報の生成
-  const getDaysOfWeek = (startDate: Date): DayInfo[] => {
-    const days = ["日", "月", "火", "水", "木", "金", "土"];
-    const today = new Date();
-    const monday = new Date(startDate);
-    monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
-
-    return Array.from({ length: 6 }, (_, index) => {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + index);
-
-      return {
-        date: `${date.getMonth() + 1}/${date.getDate()}`,
-        day: days[date.getDay()],
-        isToday: isSameDay(date, today),
-      };
-    });
-  };
-
-  const isSameDay = (date1: Date, date2: Date) => {
-    return (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()
-    );
-  };
-
-  const weekDays = useMemo(
-    () => getDaysOfWeek(currentWeekStart),
-    [currentWeekStart]
-  );
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
