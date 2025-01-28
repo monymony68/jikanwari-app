@@ -329,10 +329,6 @@ input.settings-input {
 	cursor: not-allowed;
 }
 
-.sp-only {
-	display: none;
-}
-
 /* レスポンシブCSS*/
 
 /* 小さいデスクトップ (992px未満) */
@@ -354,13 +350,6 @@ input.settings-input {
 		width: 84.5%;
 	}
 
-	.sp-only {
-		display: inline;
-	}
-
-	.pc-only {
-		display: none;
-	}
 }
 
 /* タブレット (768px未満) */

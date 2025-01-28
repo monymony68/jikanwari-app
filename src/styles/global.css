@@ -35,3 +35,17 @@
 ::-webkit-scrollbar {
     display: none;
 }
+
+.sp-only {
+    display: none;
+}
+
+@media (max-width: 991.98px) {
+    .sp-only {
+        display: inline;
+    }
+
+    .pc-only {
+        display: none;
+    }
+}

@@ -113,8 +113,11 @@ export default function ClassForm({
         </button>
 
         <div className="dialog-header">
-          <span className="date-display">{selectedPeriod.day.date}</span>（
-          {selectedPeriod.day.day}）{selectedPeriod.period}時間目
+          <div>
+            <div>{selectedPeriod.day.date}</div>
+            <div>&#40;{selectedPeriod.day.day}&#41;</div>
+          </div>
+          {selectedPeriod.period}時間目
         </div>
 
         <div className="subject-select-container">
@@ -133,7 +136,9 @@ export default function ClassForm({
             }}
             style={{
               backgroundColor: selectedMainSubject?.color.bg || "#FFF",
-              color: selectedMainSubject?.color.text || "#000",
+              color: formData.subject
+                ? selectedMainSubject?.color.text || "#000"
+                : "#444",
               border: selectedMainSubject ? "none" : "1px solid #ddd",
             }}
           >
