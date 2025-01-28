@@ -165,13 +165,15 @@
 }
 
 .calendar-day-selected {
-    background-color: #FB8F55;
-    color: white;
+    font-weight: bold;
+    outline: 2px solid #FB8F55;
 }
 
 .calendar-day-today {
     border: none;
     font-weight: bold;
+    background-color: #FB8F55;
+    color: white;
 }
 
 .calendar-day:hover {
