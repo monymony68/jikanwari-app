@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { Settings, Subject, SchoolInfo } from "../types";
 import { DEFAULT_SUBJECTS } from "../constants";
 
+type DeletedSubject = Subject & { deletedAt: number };
+
 interface SettingsMenuProps {
   settings: Settings;
   onSave: (newSettings: Settings) => void;
@@ -28,6 +30,13 @@ export default function SettingsMenu({
     type: "main" | "sub";
     parentId?: string;
   } | null>(null);
+
+  const [deletedSubjects, setDeletedSubjects] = useState<DeletedSubject[]>(
+    () => {
+      const saved = localStorage.getItem("deleted_subjects");
+      return saved ? JSON.parse(saved) : [];
+    }
+  );
 
   // 学校情報の更新
   const handleSchoolInfoChange = (field: keyof SchoolInfo, value: string) => {
@@ -107,12 +116,128 @@ export default function SettingsMenu({
 
   // 教科の削除
   const handleDeleteSubject = (id: string) => {
+    setLocalSettings((prev) => {
+      const subjectToDelete = prev.subjects.find((s) => s.id === id);
+      if (!subjectToDelete) return prev;
+
+      setDeletedSubjects((prevDeleted) => {
+        const timestamp = Date.now();
+        const newDeletedSubject = { ...subjectToDelete, deletedAt: timestamp };
+        const newDeletedSubSubjects = !subjectToDelete.parentId
+          ? prev.subjects
+              .filter((s) => s.parentId === id)
+              .map((s) => ({ ...s, deletedAt: timestamp }))
+          : [];
+
+        // 重複を防ぐため、同じ名前の教科は上書き
+        const filteredDeleted = prevDeleted.filter(
+          (d) =>
+            d.name !== subjectToDelete.name &&
+            !newDeletedSubSubjects.some((s) => s.name === d.name)
+        );
+
+        const newDeleted = [
+          ...filteredDeleted,
+          newDeletedSubject,
+          ...newDeletedSubSubjects,
+        ];
+        localStorage.setItem("deleted_subjects", JSON.stringify(newDeleted));
+        return newDeleted;
+      });
+
+      return {
+        ...prev,
+        subjects: prev.subjects.filter(
+          (subject) => subject.id !== id && subject.parentId !== id
+        ),
+      };
+    });
+  };
+
+  // 教科色をデフォルトに戻す
+  const handleResetColors = () => {
     setLocalSettings((prev) => ({
       ...prev,
-      subjects: prev.subjects.filter(
-        (subject) => subject.id !== id && subject.parentId !== id
-      ),
+      subjects: prev.subjects.map((subject) => {
+        const defaultSubject = DEFAULT_SUBJECTS.find(
+          (s) => s.name === subject.name
+        );
+        return defaultSubject
+          ? { ...subject, color: defaultSubject.color }
+          : subject;
+      }),
     }));
+  };
+
+  // 復活機能を追加
+  const handleRestoreSubjects = () => {
+    if (deletedSubjects.length === 0) {
+      alert("復活できる教科がありません");
+      return;
+    }
+
+    // メイン教科とサブ教科を分類
+    const mainSubjects = [
+      ...new Set(deletedSubjects.filter((s) => !s.parentId)),
+    ];
+    const subSubjects = [...new Set(deletedSubjects.filter((s) => s.parentId))];
+
+    const confirmMessage = [
+      `メイン教科: ${mainSubjects.length}個`,
+      subSubjects.length ? `サブ教科: ${subSubjects.length}個` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    if (confirm(`以下の教科を復活させますか？\n${confirmMessage}`)) {
+      setLocalSettings((prev) => {
+        // メイン教科を先に復活させ、新しいIDを記録
+        const idMap = new Map();
+        const restoredMainSubjects = mainSubjects.map((subject) => {
+          const newId = crypto.randomUUID();
+          idMap.set(subject.id, newId);
+          return {
+            ...subject,
+            id: newId,
+            order: prev.subjects.length + 1,
+          };
+        });
+
+        // サブ教科の親IDを新しいIDに更新
+        const restoredSubSubjects = subSubjects.map((subject) => ({
+          ...subject,
+          id: crypto.randomUUID(),
+          parentId: idMap.get(subject.parentId),
+          order: prev.subjects.length + 2,
+        }));
+
+        return {
+          ...prev,
+          subjects: [
+            ...prev.subjects,
+            ...restoredMainSubjects,
+            ...restoredSubSubjects,
+          ],
+        };
+      });
+      setDeletedSubjects([]);
+      localStorage.removeItem("deleted_subjects");
+    }
+  };
+
+  // 教科のリセット機能
+  const handleReset = () => {
+    if (confirm("教科をリセットしますか？")) {
+      setLocalSettings((prev) => ({
+        ...prev,
+        subjects: DEFAULT_SUBJECTS.map((s, index) => ({
+          ...s,
+          order: index,
+        })),
+      }));
+      setDeletedSubjects([]);
+      localStorage.removeItem("deleted_subjects");
+    }
   };
 
   // ドラッグ開始
@@ -254,21 +379,6 @@ export default function SettingsMenu({
     setDraggedItem(null);
   };
 
-  // 教科色をデフォルトに戻す
-  const handleResetColors = () => {
-    setLocalSettings((prev) => ({
-      ...prev,
-      subjects: prev.subjects.map((subject) => {
-        const defaultSubject = DEFAULT_SUBJECTS.find(
-          (s) => s.name === subject.name
-        );
-        return defaultSubject
-          ? { ...subject, color: defaultSubject.color }
-          : subject;
-      }),
-    }));
-  };
-
   return (
     <div className="settings-popup">
       <div className="settings-outer">
@@ -320,8 +430,17 @@ export default function SettingsMenu({
 
           {/* 教科の設定 */}
           <section className="settings-section">
+            <h3 className="settings-section-title">教科設定</h3>
             <div className="settings-section-header">
-              <h3 className="settings-section-title">教科設定</h3>
+              <button
+                onClick={handleRestoreSubjects}
+                className="reset-colors-button"
+              >
+                削除した教科を復活
+              </button>
+              <button onClick={handleReset} className="reset-colors-button">
+                教科をリセット
+              </button>
               <button
                 onClick={handleResetColors}
                 className="reset-colors-button"
