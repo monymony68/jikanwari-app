@@ -113,8 +113,8 @@ export default function ClassForm({
         </button>
 
         <div className="dialog-header">
-          {selectedPeriod.day.date}（{selectedPeriod.day.day}）{" "}
-          {selectedPeriod.period}時間目
+          <span className="date-display">{selectedPeriod.day.date}</span>（
+          {selectedPeriod.day.day}）{selectedPeriod.period}時間目
         </div>
 
         <div className="subject-select-container">

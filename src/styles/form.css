@@ -20,7 +20,7 @@
     background-color: #fff;
     border-radius: 6px;
     box-shadow: 0 4px 6px #444;
-    padding: 25px;
+    padding: 15px 15px 25px;
     position: relative;
     margin: auto;
 }
@@ -58,12 +58,16 @@
 .dialog-header {
     text-align: center;
     margin-bottom: 20px;
+    margin-top: 20px;
     font-size: 30px;
     font-weight: bold;
     letter-spacing: 2px;
 }
 
-/* Form Styles */
+span.date-display {
+    letter-spacing: 4px;
+}
+
 .form-container {
     background-color: #FCF1D7;
     width: 90%;

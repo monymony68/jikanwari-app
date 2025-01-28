@@ -32,7 +32,6 @@
     background-color: #444;
 }
 
-/* Week Navigation Buttons */
 .week-button {
     background-color: #FB8F55;
     color: white;
@@ -47,7 +46,7 @@
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     position: absolute;
-    top: 47%;
+    top: 20%;
     font-size: 14px;
     line-height: 1.2;
     padding: 5px;

@@ -9,10 +9,9 @@
 
 .container {
     width: 100%;
-    height: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 1rem 1rem 2rem;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -30,4 +29,9 @@
     font-weight: bold;
     line-height: 1.5;
 
+}
+
+/* スクロールバー非表示 */
+::-webkit-scrollbar {
+    display: none;
 }
