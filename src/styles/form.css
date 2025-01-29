@@ -249,3 +249,10 @@ input[readonly] {
     background-color: white;
     transition: all 0.3s ease;
 }
+
+@media (max-width: 767.98px) {
+    .dialog-content {
+        max-width: 700px;
+        width: 98%;
+    }
+}

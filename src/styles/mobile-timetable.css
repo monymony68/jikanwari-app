@@ -37,25 +37,12 @@
     text-overflow: ellipsis;
 }
 
-/*
-.day-tabs>.day-tab:not(.week-mobile-button) {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 70px;
-    padding: 10px;
-    border: none;
-    text-align: center;
-}
-    */
-
 .week-mobile-button {
     color: #FB8F55;
     min-width: 5em;
     padding: 0 0 5px;
-    line-height: 0.8em;
-    font-size: 50%;
+    line-height: 1em;
+    /* font-size: 50%; */
     border: none;
     background-color: #FFF;
     cursor: pointer;

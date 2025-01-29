@@ -185,3 +185,9 @@
 .calendar-close-button:hover {
     color: #000;
 }
+
+@media (max-width: 767.98px) {
+    .calendar-outer {
+        width: 98%;
+    }
+}

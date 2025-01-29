@@ -165,6 +165,9 @@ input.settings-input {
 /*  削除ボタン　元はform.cssのものを引用 */
 .settings-popup .delete-button {
 	padding: 6px 20px;
+	color: #FFF;
+	border: none;
+	border-radius: 4px;
 }
 
 .settings-section-header {
