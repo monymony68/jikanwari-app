@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { DayInfo, ClassData, Subject } from "../types";
 import { TIME_SLOTS } from "../constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -11,6 +11,7 @@ type MobileTimetableProps = {
   onPrevWeek: () => void;
   onNextWeek: () => void;
   currentWeekStart: Date;
+  selectedDate: Date;
 };
 
 export default function MobileTimetable({
@@ -21,16 +22,27 @@ export default function MobileTimetable({
   onPrevWeek,
   onNextWeek,
   currentWeekStart,
+  selectedDate,
 }: MobileTimetableProps) {
   // 前回選択していた曜日のインデックスを保持するref
   const previousDayIndex = useRef(0);
   // 初期レンダリングかどうかを判定するref
   const isInitialRender = useRef(true);
 
-  // 初期表示時は今日の日付を選択、それ以外は前回の曜日インデックスを使用
+  const findDayFromDate = useCallback(
+    (date: Date): DayInfo | undefined => {
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return weekDays.find((d) => d.date === `${month}/${day}`);
+    },
+    [weekDays]
+  );
+
+  // 初期表示時は選択された日付の曜日を選択、なければ今日の日付を選択
   const [selectedDay, setSelectedDay] = useState(() => {
+    const dateDay = findDayFromDate(selectedDate);
     const today = weekDays.find((day) => day.isToday);
-    return today || weekDays[0];
+    return dateDay || today || weekDays[0];
   });
 
   // 週が変わったときの処理
@@ -40,9 +52,14 @@ export default function MobileTimetable({
       return;
     }
 
-    // 前回選択していた曜日と同じインデックスの日を選択
-    setSelectedDay(weekDays[previousDayIndex.current]);
-  }, [weekDays, currentWeekStart]);
+    // カレンダーで選択された日付があるかチェック
+    const dateDay = findDayFromDate(selectedDate);
+    if (dateDay) {
+      setSelectedDay(dateDay);
+    } else {
+      setSelectedDay(weekDays[previousDayIndex.current]);
+    }
+  }, [weekDays, currentWeekStart, selectedDate, findDayFromDate]);
 
   // 選択された曜日が変更されたときにインデックスを保存
   useEffect(() => {

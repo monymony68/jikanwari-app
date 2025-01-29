@@ -301,6 +301,7 @@ export default function App() {
                   onNextWeek={handleNextWeek}
                   // 現在の週の情報を props として渡す
                   currentWeekStart={currentWeekStart}
+                  selectedDate={selectedDate}
                 />
               ) : (
                 <>
