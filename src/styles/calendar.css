@@ -19,7 +19,7 @@
 }
 
 .calendar-outer {
-    background-color: #fff;
+    background-color: #FFF;
     width: 76%;
     max-width: 600px;
     margin: 0 12%;
@@ -126,7 +126,7 @@
 
 /*.calendar-subtitle-month.selected {
     background-color: #FB8F55;
-    color: #fff;
+    color: #FFF;
 }*/
 
 .calendar-subtitle-month.selected::after {
@@ -177,7 +177,7 @@
 }
 
 .calendar-day:hover {
-    background-color: #fff;
+    background-color: #FFF;
     color: #FB8F55;
 
 }

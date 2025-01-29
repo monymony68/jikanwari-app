@@ -599,7 +599,7 @@ export default function SettingsMenu({
                                 style={{
                                   backgroundColor: subSubject.useParentTeacher
                                     ? "#f5f5f5"
-                                    : "#ffffff",
+                                    : "#FFF",
                                 }}
                               />
                               <div className="checkbox-container">

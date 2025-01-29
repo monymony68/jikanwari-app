@@ -17,7 +17,7 @@
 .dialog-content {
     width: 90%;
     max-width: 600px;
-    background-color: #fff;
+    background-color: #FFF;
     border-radius: 6px;
     box-shadow: 0 4px 6px #444;
     padding: 15px 15px 25px;
@@ -83,7 +83,7 @@
 
 .form-group {
     margin-bottom: 15px;
-    background-color: #fff;
+    background-color: #FFF;
     padding: 10px;
     border-radius: 4px;
     display: flex;
@@ -106,7 +106,7 @@
     font-family: inherit;
     font-size: inherit;
     box-sizing: border-box;
-    background-color: #fff;
+    background-color: #FFF;
     /* デフォルトの背景色を設定 */
     transition: background-color 0.3s ease;
     /* スムーズな切り替えのためのトランジション */
@@ -145,7 +145,7 @@
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    color: #fff;
+    color: #FFF;
 }
 
 .save-button {

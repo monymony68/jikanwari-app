@@ -159,29 +159,6 @@ export default function App() {
     setIsDialogOpen(true);
   };
 
-  // データが変更されたときにローカルストレージに保存
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
-  }, [settings]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.CELL_DATA, JSON.stringify(cellData));
-  }, [cellData]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEYS.CURRENT_WEEK,
-      currentWeekStart.toISOString()
-    );
-  }, [currentWeekStart]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEYS.SELECTED_DATE,
-      selectedDate.toISOString()
-    );
-  }, [selectedDate]);
-
   const handleInputChange = (field: keyof ClassData, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -310,23 +287,6 @@ export default function App() {
           </h1>
         </div>
 
-        {/* 週移動ボタン */}
-        <button
-          className="week-button prev-week-button"
-          onClick={handlePrevWeek}
-        >
-          <ChevronLeft size={24} />
-          <span className="week-button-text">前の週</span>
-        </button>
-
-        <button
-          className="week-button next-week-button"
-          onClick={handleNextWeek}
-        >
-          <ChevronRight size={24} />
-          <span className="week-button-text">次の週</span>
-        </button>
-
         {/* 時間割テーブル */}
         <div className="content">
           <div className="timetable-container">
@@ -337,14 +297,34 @@ export default function App() {
                   cellData={cellData}
                   subjects={settings.subjects}
                   onCellClick={handleCellClick}
+                  onPrevWeek={handlePrevWeek}
+                  onNextWeek={handleNextWeek}
                 />
               ) : (
-                <PCTimetable
-                  weekDays={weekDays}
-                  cellData={cellData}
-                  subjects={settings.subjects}
-                  onCellClick={handleCellClick}
-                />
+                <>
+                  <button
+                    className="week-button prev-week-button"
+                    onClick={handlePrevWeek}
+                  >
+                    <ChevronLeft size={24} />
+                    <span className="week-button-text">前の週</span>
+                  </button>
+
+                  <button
+                    className="week-button next-week-button"
+                    onClick={handleNextWeek}
+                  >
+                    <ChevronRight size={24} />
+                    <span className="week-button-text">次の週</span>
+                  </button>
+
+                  <PCTimetable
+                    weekDays={weekDays}
+                    cellData={cellData}
+                    subjects={settings.subjects}
+                    onCellClick={handleCellClick}
+                  />
+                </>
               )}
             </div>
           </div>

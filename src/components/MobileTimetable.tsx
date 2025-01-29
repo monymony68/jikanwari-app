@@ -1,13 +1,15 @@
-/* モバイル用メイン画面 */
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import type { DayInfo, ClassData, Subject } from "../types";
 import { TIME_SLOTS } from "../constants";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type MobileTimetableProps = {
   weekDays: DayInfo[];
   cellData: { [key: string]: ClassData };
   subjects: Subject[];
   onCellClick: (day: DayInfo, period: number) => void;
+  onPrevWeek: () => void;
+  onNextWeek: () => void;
 };
 
 export default function MobileTimetable({
@@ -15,27 +17,12 @@ export default function MobileTimetable({
   cellData,
   subjects,
   onCellClick,
+  onPrevWeek,
+  onNextWeek,
 }: MobileTimetableProps) {
   const [selectedDay, setSelectedDay] = useState<DayInfo>(
-    // 今日の日付があれば、それを初期選択。なければ最初の週の最初の日
     weekDays.find((day) => day.isToday) || weekDays[0]
   );
-  const todayTabRef = useRef<HTMLButtonElement>(null);
-  const dayTabsRef = useRef<HTMLDivElement>(null);
-  const [todayOffset, setTodayOffset] = useState<number>(0);
-
-  // 位置計算の関数を切り出し
-  const calculateTodayOffset = useCallback(() => {
-    const todayTab = todayTabRef.current;
-    const dayTabsContainer = dayTabsRef.current;
-
-    if (todayTab && dayTabsContainer) {
-      const tabRect = todayTab.getBoundingClientRect();
-      const containerRect = dayTabsContainer.getBoundingClientRect();
-      const offset = tabRect.left - containerRect.left + tabRect.width / 2;
-      setTodayOffset(offset);
-    }
-  }, []);
 
   // 週が変わったときに、今日の日付を再選択
   useEffect(() => {
@@ -45,55 +32,42 @@ export default function MobileTimetable({
     }
   }, [weekDays]);
 
-  // TODAYボタンの位置を計算
-  useEffect(() => {
-    calculateTodayOffset();
-
-    // リサイズイベントリスナーを追加
-    window.addEventListener("resize", calculateTodayOffset);
-
-    // クリーンアップ
-    return () => {
-      window.removeEventListener("resize", calculateTodayOffset);
-    };
-  }, [calculateTodayOffset, selectedDay, weekDays]);
-
   return (
     <div className="mobile-content">
-      <div className="day-tabs" ref={dayTabsRef}>
-        {todayOffset > 0 && (
-          <div
-            className="today-marker"
-            style={{
-              position: "absolute",
-              left: `${todayOffset}px`,
-              top: "-16px",
-              transform: "translateX(-50%)",
-              backgroundColor: "#FB8F55",
-              color: "#fff",
-              fontSize: "0.7rem",
-              padding: "1px 4px",
-              borderRadius: "4px",
-              zIndex: 1,
-              border: "1.5px #fff solid",
-            }}
-          >
-            TODAY
-          </div>
-        )}
-        {weekDays.map((day) => (
-          <button
-            ref={day.isToday ? todayTabRef : null}
-            key={day.day}
-            onClick={() => setSelectedDay(day)}
-            className={`day-tab
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "0.3em",
+          }}
+        >
+          <button className="week-mobile-button" onClick={onPrevWeek}>
+            <ChevronLeft size={24} />
+            <br />
+            前の週
+          </button>
+          <button className="week-mobile-button" onClick={onNextWeek}>
+            <ChevronRight size={24} />
+            <br />
+            次の週
+          </button>
+        </div>
+
+        <div className="day-tabs">
+          {weekDays.map((day) => (
+            <button
+              key={day.day}
+              onClick={() => setSelectedDay(day)}
+              className={`day-tab
               ${selectedDay.day === day.day ? "active" : ""}
               ${day.isToday ? "today" : ""}`}
-          >
-            {day.date}
-            <br />({day.day})
-          </button>
-        ))}
+            >
+              {day.date}
+              <br />({day.day})
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="time-slots">
@@ -110,7 +84,7 @@ export default function MobileTimetable({
               className="time-slot-card"
               onClick={() => onCellClick(selectedDay, slot.period)}
               style={{
-                backgroundColor: subject ? subject.color.bg : "#fff",
+                backgroundColor: subject ? subject.color.bg : "#FFF",
                 color: subject ? subject.color.text : "#000",
               }}
             >

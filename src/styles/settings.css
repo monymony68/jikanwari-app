@@ -13,7 +13,7 @@
 }
 
 .settings-outer {
-	background-color: #fff;
+	background-color: #FFF;
 	width: 90%;
 	max-width: 800px;
 	border-radius: 8px;
@@ -44,7 +44,7 @@
 }
 
 .subject-item {
-	background-color: #fff;
+	background-color: #FFF;
 	border-radius: 4px;
 	padding: 10px;
 	margin-bottom: 10px;
@@ -146,7 +146,7 @@ input.settings-input {
 	border-radius: 4px;
 	font-size: .8em;
 	background-color: #fb8f55;
-	color: #fff;
+	color: #FFF;
 	font-weight: bold;
 	border: none;
 }
@@ -179,7 +179,7 @@ input.settings-input {
 	border: none;
 	border-radius: 4px;
 	font-size: 1rem;
-	background-color: #ffffff;
+	background-color: #FFF;
 	color: #fb8f55;
 	cursor: pointer;
 }
