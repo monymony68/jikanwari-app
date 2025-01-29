@@ -40,6 +40,8 @@
     display: none;
 }
 
+
+
 @media (max-width: 991.98px) {
     .sp-only {
         display: inline;
@@ -47,5 +49,26 @@
 
     .pc-only {
         display: none;
+    }
+}
+
+/* レスポンシブ切り替え用 */
+.pc-timetable {
+    display: none;
+}
+
+.mobile-timetable {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .pc-timetable {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-timetable {
+        display: block;
     }
 }

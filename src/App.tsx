@@ -1,11 +1,13 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 //↓componentsフォルダ内の各コンポーネントをインポート
 import CalendarComponent from "./components/Calendar";
-import TimetableCell from "./components/TimetableCell";
 import ClassForm from "./components/ClassForm";
 import HamburgerMenu from "./components/HamburgerMenu";
 import SettingsMenu from "./components/SettingsMenu";
-import { TIME_SLOTS, DEFAULT_SUBJECTS } from "./constants";
+import PCTimetable from "./components/PCTimetable";
+import MobileTimetable from "./components/MobileTimetable";
+
+import { DEFAULT_SUBJECTS } from "./constants";
 import type { DayInfo, ClassData, CellData, Settings } from "./types";
 //↓アイコンライブラリ「lucide-react」でカレンダーアイコン、矢印アイコンをインポート
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
@@ -19,7 +21,17 @@ const STORAGE_KEYS = {
 } as const;
 
 export default function App() {
-  // 状態の初期化をローカルストレージから行う
+  // モバイルデバイスかどうかの状態を管理
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 991.98);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 991.98);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // 状態の初期化をローカルストレージから行う
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
     const savedWeek = localStorage.getItem(STORAGE_KEYS.CURRENT_WEEK);
@@ -318,46 +330,23 @@ export default function App() {
         {/* 時間割テーブル */}
         <div className="content">
           <div className="timetable-container">
-            <table className="timetable">
-              <thead>
-                <tr>
-                  <th />
-                  {weekDays.map((day) => (
-                    <th
-                      key={day.day}
-                      className={`day-header ${day.isToday ? "today" : ""}`}
-                    >
-                      {day.date}
-                      <br />({day.day})
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {TIME_SLOTS.map((slot) => (
-                  <tr key={slot.period}>
-                    <td className="time-slot-container">
-                      <div className="period-number">{slot.period}</div>
-                      <div className="period-time">
-                        {slot.time.split("~")[0]}
-                        <br />~<br />
-                        {slot.time.split("~")[1]}
-                      </div>
-                    </td>
-                    {weekDays.map((day) => (
-                      <TimetableCell
-                        key={`${slot.period}-${day.day}`}
-                        day={day}
-                        period={slot.period}
-                        data={cellData[`${day.date}-${slot.period}`]}
-                        onClick={() => handleCellClick(day, slot.period)}
-                        subjects={settings.subjects}
-                      />
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="content">
+              {isMobile ? (
+                <MobileTimetable
+                  weekDays={weekDays}
+                  cellData={cellData}
+                  subjects={settings.subjects}
+                  onCellClick={handleCellClick}
+                />
+              ) : (
+                <PCTimetable
+                  weekDays={weekDays}
+                  cellData={cellData}
+                  subjects={settings.subjects}
+                  onCellClick={handleCellClick}
+                />
+              )}
+            </div>
           </div>
         </div>
 

@@ -1,0 +1,91 @@
+/* モバイル用時間割のスタイル */
+.mobile-content {
+    padding: 0;
+}
+
+.day-tabs {
+    display: flex;
+    overflow-x: visible;
+    margin-bottom: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.day-tab {
+    flex: 1;
+    min-width: 70px;
+    padding: 0.5rem;
+    text-align: center;
+    border: none;
+    background: none;
+    color: #444;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.day-tab.active {
+    background: #FB8F55;
+    color: #fff;
+}
+
+.time-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.time-slot-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.time-slot-card:not([style*="background-color: #fff"]) .time {
+    color: #FFF;
+}
+
+.slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 0.4em;
+}
+
+.period {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.time {
+    color: #666;
+}
+
+.slot-content {
+    padding-top: 0.5rem;
+}
+
+.subject {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.detail {
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.empty-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60px;
+    font-size: 2rem;
+    color: #ccc;
+}

@@ -34,7 +34,7 @@
 
 .week-button {
     background-color: #FB8F55;
-    color: white;
+    color: #FFF;
     border: none;
     border-radius: 50%;
     width: 70px;
@@ -50,7 +50,7 @@
     font-size: 14px;
     line-height: 1.2;
     padding: 5px;
-    z-index: 2;
+    z-index: 1;
 }
 
 .week-button-text {
@@ -69,4 +69,11 @@
 
 .next-week-button {
     right: 5px;
+}
+
+@media (max-width: 991.98px) {
+    .week-button {
+        top: 12%;
+        outline: #FFF solid 1px;
+    }
 }
