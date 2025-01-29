@@ -3,6 +3,10 @@ body {
     margin: 0;
 }
 
+* {
+    font-family: sans-serif;
+}
+
 .wrapper {
     width: 100vw;
     height: 100vh;

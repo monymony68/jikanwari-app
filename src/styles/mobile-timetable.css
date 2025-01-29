@@ -42,7 +42,6 @@
     min-width: 5em;
     padding: 0 0 5px;
     line-height: 1em;
-    /* font-size: 50%; */
     border: none;
     background-color: #FFF;
     cursor: pointer;
@@ -104,8 +103,22 @@ button.week-mobile-button svg {
     cursor: pointer;
 }
 
+/* デフォルトのスタイル（背景色が#FFFの場合） */
 .time-slot-card:not([style*="background-color: #FFF"]) .time {
     color: #FFF;
+}
+
+.time-slot-card:not([style*="background-color: #FFF"]) .slot-header {
+    border-bottom: 1px solid #FFF;
+}
+
+/* （背景色が#FFF以外の場合） */
+.time-slot-card[style*="background-color: #FFF"] .time {
+    color: #666;
+}
+
+.time-slot-card[style*="background-color: #FFF"] .slot-header {
+    border-bottom: 1px solid #cccccc;
 }
 
 .slot-header {
@@ -148,4 +161,19 @@ button.week-mobile-button svg {
     min-height: 60px;
     font-size: 2rem;
     color: #ccc;
+}
+
+@media (max-width: 767.98px) {
+    .day-tab {
+        line-height: 2rem;
+    }
+
+    .week-mobile-button {
+        font-size: 120%;
+        line-height: 1.2em;
+    }
+
+    button.week-mobile-button svg {
+        width: 100%;
+    }
 }

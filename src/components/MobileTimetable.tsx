@@ -78,6 +78,20 @@ export default function MobileTimetable({
             ? subjects.find((s) => s.name === data.subject)
             : null;
 
+          // 背景色に基づいてスタイルを決定
+          const hasCustomBg = subject && subject.color.bg !== "#FFF";
+          const timeStyle = {
+            color: hasCustomBg ? "#FFF" : "#666",
+          };
+          const slotHeaderStyle = {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "0.5rem",
+            borderBottom: `1px solid ${hasCustomBg ? "#FFF" : "#cccccc"}`,
+            paddingBottom: "0.4em",
+          };
+
           return (
             <div
               key={slot.period}
@@ -88,9 +102,11 @@ export default function MobileTimetable({
                 color: subject ? subject.color.text : "#000",
               }}
             >
-              <div className="slot-header">
-                <div className="period">{slot.period}時限</div>
-                <div className="time">{slot.time}</div>
+              <div className="slot-header" style={slotHeaderStyle}>
+                <div className="period">{slot.period}時間目</div>
+                <div className="time" style={timeStyle}>
+                  {slot.time}
+                </div>
               </div>
               {data ? (
                 <div className="slot-content">
