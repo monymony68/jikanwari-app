@@ -94,7 +94,7 @@
     border: 1px solid #FB8F55;
     border-radius: 6px;
     padding: 0.2rem 1rem;
-    margin-bottom: .5em;
+    margin-bottom: .8em;
     width: 5.5rem;
     text-align: center;
 }
@@ -112,11 +112,19 @@
     cursor: pointer;
     transition: background-color 0.3s;
     font-size: 110%;
+    border-radius: 6px;
+}
 
+.calendar-subtitle-month.current-month {
+    color: #FB8F55;
 }
 
 .calendar-subtitle-month:hover {
     background-color: #e0e0e0;
+}
+
+.calendar-subtitle-month.selected {
+    outline: #FB8F55 solid 2px;
 }
 
 .calendar-subtitle-month.selected::after {
@@ -179,6 +187,10 @@
     .calendar-outer {
         width: 98%;
         max-width: 700px;
+    }
+
+    .calendar-subtitle-month:hover {
+        background-color: #FFF;
     }
 
     .calendar-grid {

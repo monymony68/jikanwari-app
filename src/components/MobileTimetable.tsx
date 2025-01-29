@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { DayInfo, ClassData, Subject } from "../types";
 import { TIME_SLOTS } from "../constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -10,6 +10,7 @@ type MobileTimetableProps = {
   onCellClick: (day: DayInfo, period: number) => void;
   onPrevWeek: () => void;
   onNextWeek: () => void;
+  currentWeekStart: Date;
 };
 
 export default function MobileTimetable({
@@ -19,18 +20,39 @@ export default function MobileTimetable({
   onCellClick,
   onPrevWeek,
   onNextWeek,
+  currentWeekStart,
 }: MobileTimetableProps) {
-  const [selectedDay, setSelectedDay] = useState<DayInfo>(
-    weekDays.find((day) => day.isToday) || weekDays[0]
-  );
+  // 前回選択していた曜日のインデックスを保持するref
+  const previousDayIndex = useRef(0);
+  // 初期レンダリングかどうかを判定するref
+  const isInitialRender = useRef(true);
 
-  // 週が変わったときに、今日の日付を再選択
+  // 初期表示時は今日の日付を選択、それ以外は前回の曜日インデックスを使用
+  const [selectedDay, setSelectedDay] = useState(() => {
+    const today = weekDays.find((day) => day.isToday);
+    return today || weekDays[0];
+  });
+
+  // 週が変わったときの処理
   useEffect(() => {
-    const todayDay = weekDays.find((day) => day.isToday);
-    if (todayDay) {
-      setSelectedDay(todayDay);
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
     }
-  }, [weekDays]);
+
+    // 前回選択していた曜日と同じインデックスの日を選択
+    setSelectedDay(weekDays[previousDayIndex.current]);
+  }, [weekDays, currentWeekStart]);
+
+  // 選択された曜日が変更されたときにインデックスを保存
+  useEffect(() => {
+    const currentIndex = weekDays.findIndex(
+      (day) => day.date === selectedDay.date
+    );
+    if (currentIndex !== -1) {
+      previousDayIndex.current = currentIndex;
+    }
+  }, [selectedDay, weekDays]);
 
   return (
     <div className="mobile-content">

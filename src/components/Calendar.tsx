@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type CalendarProps = {
   selectedDate: Date;
@@ -13,6 +13,16 @@ export default function Calendar({
 }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate));
   const [selectedSubMonth, setSelectedSubMonth] = useState<number | null>(null);
+
+  // 現在表示中の月（currentMonth）と同じ月をselectedSubMonthに設定
+  useEffect(() => {
+    setSelectedSubMonth(currentMonth.getMonth());
+  }, [currentMonth]);
+
+  const isCurrentSubMonth = (month: number) => {
+    const today = new Date();
+    return today.getMonth() === month;
+  };
 
   const today = new Date();
   const formattedToday = `${today.getFullYear()}/${String(
@@ -142,7 +152,7 @@ export default function Calendar({
                     key={month}
                     className={`calendar-subtitle-month ${
                       selectedSubMonth === month ? "selected" : ""
-                    }`}
+                    } ${isCurrentSubMonth(month) ? "current-month" : ""}`}
                     onClick={() => handleSubMonthSelect(Number(year), month)}
                   >
                     {month + 1}月

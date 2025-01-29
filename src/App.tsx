@@ -34,8 +34,8 @@ export default function App() {
 
   // 状態の初期化をローカルストレージから行う
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
-    const savedWeek = localStorage.getItem(STORAGE_KEYS.CURRENT_WEEK);
-    return savedWeek ? new Date(savedWeek) : new Date();
+    // ページ更新時は常に当日の日付を使用
+    return new Date();
   });
 
   // 曜日情報の生成
@@ -299,6 +299,8 @@ export default function App() {
                   onCellClick={handleCellClick}
                   onPrevWeek={handlePrevWeek}
                   onNextWeek={handleNextWeek}
+                  // 現在の週の情報を props として渡す
+                  currentWeekStart={currentWeekStart}
                 />
               ) : (
                 <>
