@@ -1,6 +1,6 @@
 # 学校時間割管理アプリ
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/monymony68/jikanwari-app/blob/main/LICENSE)
 
 ## 概要
 
@@ -38,6 +38,22 @@
 ### 使用ライブラリ
 
 - Lucide React（アイコン）
+
+インストール方法
+bashCopy# リポジトリのクローン
+git clone https://github.com/monymony68/jikanwari-app.git
+
+# プロジェクトディレクトリへ移動
+
+cd jikanwari-app
+
+# 依存パッケージのインストール
+
+npm install
+
+# 開発サーバーの起動
+
+npm run dev
 
 ## 使用方法
 
