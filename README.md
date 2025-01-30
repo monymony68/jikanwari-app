@@ -39,22 +39,6 @@
 
 - Lucide React（アイコン）
 
-## インストール方法
-
-```bash
-# リポジトリのクローン
-git clone https://github.com/yourusername/school-timetable-app.git
-
-# プロジェクトディレクトリへ移動
-cd school-timetable-app
-
-# 依存パッケージのインストール
-npm install
-
-# 開発サーバーの起動
-npm run dev
-```
-
 ## 使用方法
 
 ### 1. 初期設定
