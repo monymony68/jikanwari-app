@@ -173,7 +173,7 @@ export default function ClassForm({
                     onInputChange("teacher", teacherName);
                   }}
                   style={{
-                    borderColor: selectedMainSubject?.color.bg || "#ddd",
+                    borderColor: selectedMainSubject?.color.bg || "#fff",
                     color: selectedMainSubject?.color.bg || "#000",
                   }}
                 >
