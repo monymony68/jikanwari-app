@@ -1,63 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type CalendarProps = {
   selectedDate: Date;
+  activeDate: Date;
   onDateSelect: (date: Date) => void;
   onClose: () => void;
 };
 
 export default function Calendar({
   selectedDate,
+  activeDate,
   onDateSelect,
   onClose,
 }: CalendarProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate));
-  const [selectedSubMonth, setSelectedSubMonth] = useState<number | null>(null);
+  const [currentMonth, setCurrentMonth] = useState(() => new Date(activeDate));
+  const [selectedSubMonth, setSelectedSubMonth] = useState(() =>
+    activeDate.getMonth()
+  );
 
-  // 現在表示中の月（currentMonth）と同じ月をselectedSubMonthに設定
-  useEffect(() => {
-    setSelectedSubMonth(currentMonth.getMonth());
-  }, [currentMonth]);
-
-  const isCurrentSubMonth = (month: number) => {
-    const today = new Date();
-    return today.getMonth() === month;
-  };
-
-  const today = new Date();
-  const formattedToday = `${today.getFullYear()}/${String(
-    today.getMonth() + 1
-  ).padStart(2, "0")}/${String(today.getDate()).padStart(2, "0")}`;
-
-  const isSameDate = (date1: Date, date2: Date) => {
+  const isSameDate = useCallback((date1: Date, date2: Date) => {
     return (
       date1.getFullYear() === date2.getFullYear() &&
       date1.getMonth() === date2.getMonth() &&
       date1.getDate() === date2.getDate()
     );
-  };
+  }, []);
 
-  const generateCalendarDays = () => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - startDate.getDay());
+  useEffect(() => {
+    const newDate = new Date(activeDate);
+    setCurrentMonth(newDate);
+    setSelectedSubMonth(newDate.getMonth());
+  }, [activeDate]);
 
-    return Array.from({ length: 42 }, (_, i) => {
-      const day = new Date(startDate);
-      day.setDate(startDate.getDate() + i);
-
-      return {
-        date: day,
-        isCurrentMonth: day.getMonth() === month,
-        isSelected: isSameDate(day, selectedDate),
-        isToday: isSameDate(day, new Date()),
-      };
-    });
-  };
-
-  const calculateValidRange = (baseDate: Date) => {
+  const calculateValidRange = useCallback((baseDate: Date) => {
     const baseYear = baseDate.getFullYear();
     const baseMonth = baseDate.getMonth();
 
@@ -74,35 +49,92 @@ export default function Calendar({
           endYear: baseYear,
           endMonth: 2,
         };
-  };
+  }, []);
 
+  // validRangeの定義を前に移動
   const validRange = calculateValidRange(selectedDate);
 
-  const handlePrevMonth = () => {
-    setCurrentMonth((prev) => {
-      const newMonth = new Date(prev);
-      newMonth.setMonth(prev.getMonth() - 1);
-      return isValidMonth(newMonth) ? newMonth : prev;
-    });
+  const isValidMonth = useCallback(
+    (date: Date) => {
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      return (
+        (year === validRange.startYear && month >= validRange.startMonth) ||
+        (year === validRange.endYear && month <= validRange.endMonth) ||
+        (year > validRange.startYear && year < validRange.endYear)
+      );
+    },
+    [
+      validRange.startYear,
+      validRange.startMonth,
+      validRange.endYear,
+      validRange.endMonth,
+    ]
+  );
+
+  // 月を変更する共通ハンドラー
+  const handleMonthChange = useCallback(
+    (newDate: Date) => {
+      if (isValidMonth(newDate)) {
+        setCurrentMonth(newDate);
+        // currentMonthの変更と同時にselectedSubMonthも更新
+        setSelectedSubMonth(newDate.getMonth());
+      }
+    },
+    [isValidMonth]
+  );
+
+  // 前月ボタンのハンドラー
+  const handlePrevMonth = useCallback(() => {
+    const newMonth = new Date(currentMonth);
+    newMonth.setMonth(currentMonth.getMonth() - 1);
+    handleMonthChange(newMonth);
+  }, [currentMonth, handleMonthChange]);
+
+  // 次月ボタンのハンドラー
+  const handleNextMonth = useCallback(() => {
+    const newMonth = new Date(currentMonth);
+    newMonth.setMonth(currentMonth.getMonth() + 1);
+    handleMonthChange(newMonth);
+  }, [currentMonth, handleMonthChange]);
+
+  const handleSubMonthSelect = useCallback(
+    (year: number, month: number) => {
+      const newDate = new Date(year, month, 1);
+      handleMonthChange(newDate);
+    },
+    [handleMonthChange]
+  );
+
+  const isCurrentSubMonth = (month: number) => {
+    const today = new Date();
+    return today.getMonth() === month;
   };
 
-  const handleNextMonth = () => {
-    setCurrentMonth((prev) => {
-      const newMonth = new Date(prev);
-      newMonth.setMonth(prev.getMonth() + 1);
-      return isValidMonth(newMonth) ? newMonth : prev;
-    });
-  };
+  const today = new Date();
+  const formattedToday = `${today.getFullYear()}/${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}/${String(today.getDate()).padStart(2, "0")}`;
 
-  const isValidMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    return (
-      (year === validRange.startYear && month >= validRange.startMonth) ||
-      (year === validRange.endYear && month <= validRange.endMonth) ||
-      (year > validRange.startYear && year < validRange.endYear)
-    );
-  };
+  const generateCalendarDays = useCallback(() => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+
+    return Array.from({ length: 42 }, (_, i) => {
+      const day = new Date(startDate);
+      day.setDate(startDate.getDate() + i);
+
+      return {
+        date: day,
+        isCurrentMonth: day.getMonth() === month,
+        isSelected: isSameDate(day, activeDate),
+        isToday: isSameDate(day, new Date()),
+      };
+    });
+  }, [currentMonth, activeDate, isSameDate]);
 
   const getValidMonthsByYear = () => {
     const monthsByYear: { [key: number]: number[] } = {};
@@ -127,11 +159,6 @@ export default function Calendar({
     }
 
     return monthsByYear;
-  };
-
-  const handleSubMonthSelect = (year: number, month: number) => {
-    setCurrentMonth(new Date(year, month, 1));
-    setSelectedSubMonth(month);
   };
 
   const validMonthsByYear = getValidMonthsByYear();

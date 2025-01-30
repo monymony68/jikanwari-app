@@ -12,6 +12,7 @@ type MobileTimetableProps = {
   onNextWeek: () => void;
   currentWeekStart: Date;
   selectedDate: Date;
+  onDaySelect: (date: Date) => void;
 };
 
 export default function MobileTimetable({
@@ -23,6 +24,7 @@ export default function MobileTimetable({
   onNextWeek,
   currentWeekStart,
   selectedDate,
+  onDaySelect,
 }: MobileTimetableProps) {
   // 前回選択していた曜日のインデックスを保持するref
   const previousDayIndex = useRef(0);
@@ -71,6 +73,19 @@ export default function MobileTimetable({
     }
   }, [selectedDay, weekDays]);
 
+  // 日付選択時の処理を修正
+  const handleDaySelect = useCallback(
+    (day: DayInfo) => {
+      setSelectedDay(day);
+      // 選択された日付をAppコンポーネントに通知
+      const [month, dayOfMonth] = day.date.split("/").map(Number);
+      const year = currentWeekStart.getFullYear();
+      const dateObj = new Date(year, month - 1, dayOfMonth);
+      onDaySelect(dateObj); // Appコンポーネントのハンドラーを呼び出し
+    },
+    [onDaySelect, currentWeekStart]
+  );
+
   return (
     <div className="mobile-content">
       <div>
@@ -97,10 +112,10 @@ export default function MobileTimetable({
           {weekDays.map((day) => (
             <button
               key={day.day}
-              onClick={() => setSelectedDay(day)}
+              onClick={() => handleDaySelect(day)} // setSelectedDayをhandleDaySelectに変更
               className={`day-tab
-              ${selectedDay.day === day.day ? "active" : ""}
-              ${day.isToday ? "today" : ""}`}
+          ${selectedDay.day === day.day ? "active" : ""}
+          ${day.isToday ? "today" : ""}`}
             >
               {day.date}
               <br />({day.day})

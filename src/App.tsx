@@ -137,11 +137,12 @@ export default function App() {
     );
   }, [selectedDate]);
 
-  const handleDateSelect = (date: Date) => {
+  const handleDateSelect = useCallback((date: Date) => {
     setSelectedDate(date);
+    setActiveMobileDate(date);
     setCurrentWeekStart(date);
     setIsCalendarOpen(false);
-  };
+  }, []);
 
   const handleCellClick = (day: DayInfo, period: number) => {
     const cellKey = `${day.date}-${period}`;
@@ -227,6 +228,18 @@ export default function App() {
     });
   };
 
+  const [activeMobileDate, setActiveMobileDate] = useState(() => selectedDate);
+
+  const handleMobileDaySelect = useCallback((date: Date) => {
+    setActiveMobileDate(date);
+    setSelectedDate(date); // 選択された日付も更新
+    setCurrentWeekStart(date); // 週の開始日も更新
+  }, []);
+
+  useEffect(() => {
+    setActiveMobileDate(selectedDate);
+  }, [selectedDate]);
+
   return (
     <div className="wrapper">
       <div className="container">
@@ -242,6 +255,7 @@ export default function App() {
         {isCalendarOpen && (
           <CalendarComponent
             selectedDate={selectedDate}
+            activeDate={activeMobileDate}
             onDateSelect={handleDateSelect}
             onClose={() => setIsCalendarOpen(false)}
           />
@@ -299,9 +313,9 @@ export default function App() {
                   onCellClick={handleCellClick}
                   onPrevWeek={handlePrevWeek}
                   onNextWeek={handleNextWeek}
-                  // 現在の週の情報を props として渡す
                   currentWeekStart={currentWeekStart}
                   selectedDate={selectedDate}
+                  onDaySelect={handleMobileDaySelect}
                 />
               ) : (
                 <>
