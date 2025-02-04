@@ -83,9 +83,13 @@ npm run dev
 ```
 src/
   ├── components/         # コンポーネントファイル
-  │   ├── Calendar.tsx   # カレンダーコンポーネント
+  │   ├── Calendar.tsx   # カレンダー
   │   ├── ClassForm.tsx  # 授業情報入力フォーム
-  │   └── ...
+  │   ├── HamburgerMenu.tsx  # ハンバーガーメニュー
+  │   ├── SettingsMenu.tsx   # 設定
+  │   ├── MobileTimetable.tsx  # モバイル画面
+  │   ├── PCTimetable.tsx  # PC画面
+  │   └── TimetableCell.tsx  # 授業表
   ├── types/             # 型定義ファイル
   ├── constants/         # 定数定義
   └── App.tsx           # メインコンポーネント
