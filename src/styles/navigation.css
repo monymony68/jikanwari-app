@@ -74,7 +74,13 @@
 
 @media (max-width: 767.98px) {
     .calendar-icon {
-        width: 15%;
-        height: 8%;
+        width: 10%;
+        height: 10%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .calendar-icon {
+        width: 16%;
     }
 }
