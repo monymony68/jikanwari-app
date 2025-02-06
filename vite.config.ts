@@ -5,4 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base: "/jikanwari-app/",
   plugins: [react()],
+  define: {
+    "import.meta.env.APP_TITLE": '"時間割表アプリ"',
+  },
 });
