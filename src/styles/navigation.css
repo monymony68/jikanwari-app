@@ -24,11 +24,19 @@
     position: absolute;
     right: 1rem;
     top: 1rem;
+    width: 85px;
+    height: 85px;
+    background-color: #FFF;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     z-index: 1;
+    padding: 10px;
 }
 
 .hamburger-line {
@@ -89,17 +97,15 @@
         width: 40px;
         height: 40px;
     }
-}
 
-@media (max-width: 575.98px) {
-    .calendar-icon {
+    .hamburger {
         width: 55px;
         height: 55px;
-        padding: 20px;
+        padding: 12px;
     }
 
-    .calendar-icon svg {
-        width: 40px;
-        height: 40px;
+    .hamburger-line {
+        width: 24px;
+        height: 2px;
     }
 }
