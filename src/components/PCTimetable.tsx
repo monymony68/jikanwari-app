@@ -1,6 +1,5 @@
 /* PC用メイン画面 */
-import type { DayInfo, ClassData, Subject } from "../types";
-import { TIME_SLOTS } from "../constants";
+import type { DayInfo, ClassData, Subject, PeriodTime } from "../types";
 import TimetableCell from "./TimetableCell";
 
 type PCTimetableProps = {
@@ -8,6 +7,7 @@ type PCTimetableProps = {
   cellData: { [key: string]: ClassData };
   subjects: Subject[];
   onCellClick: (day: DayInfo, period: number) => void;
+  periodTimes: PeriodTime[];
 };
 
 export default function PCTimetable({
@@ -15,6 +15,7 @@ export default function PCTimetable({
   cellData,
   subjects,
   onCellClick,
+  periodTimes,
 }: PCTimetableProps) {
   return (
     <div className="content">
@@ -35,23 +36,23 @@ export default function PCTimetable({
             </tr>
           </thead>
           <tbody>
-            {TIME_SLOTS.map((slot) => (
-              <tr key={slot.period}>
+            {periodTimes.map((time, index) => (
+              <tr key={index + 1}>
                 <td className="time-slot-container">
-                  <div className="period-number">{slot.period}</div>
+                  <div className="period-number">{index + 1}</div>
                   <div className="period-time">
-                    {slot.time.split("~")[0]}
+                    {time.start}
                     <br />~<br />
-                    {slot.time.split("~")[1]}
+                    {time.end}
                   </div>
                 </td>
                 {weekDays.map((day) => (
                   <TimetableCell
-                    key={`${slot.period}-${day.day}`}
+                    key={`${index + 1}-${day.day}`}
                     day={day}
-                    period={slot.period}
-                    data={cellData[`${day.date}-${slot.period}`]}
-                    onClick={() => onCellClick(day, slot.period)}
+                    period={index + 1}
+                    data={cellData[`${day.date}-${index + 1}`]}
+                    onClick={() => onCellClick(day, index + 1)}
                     subjects={subjects}
                   />
                 ))}

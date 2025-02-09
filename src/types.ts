@@ -41,13 +41,7 @@ export interface Subject {
   teacher?: string; // 担当教師
   parentId?: string; // サブ教科の親教科のID
   order?: number; // 教科の並び順
-  useParentTeacher?: boolean; // 追加：メイン教科と同一の教師を使用するかどうかのフラグ
-}
-
-// 設定の型
-export interface Settings {
-  schoolInfo: SchoolInfo;
-  subjects: Subject[];
+  useParentTeacher?: boolean; // メイン教科と同一の教師を使用するかどうかのフラグ
 }
 
 export type SubjectColors = {
@@ -56,3 +50,14 @@ export type SubjectColors = {
     text: string;
   };
 };
+
+export interface PeriodTime {
+  start: string;
+  end: string;
+}
+
+export interface Settings {
+  schoolInfo: SchoolInfo;
+  subjects: Subject[];
+  periodTimes: PeriodTime[];
+}

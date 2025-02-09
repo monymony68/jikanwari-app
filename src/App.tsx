@@ -315,6 +315,7 @@ export default function App() {
                   currentWeekStart={currentWeekStart}
                   selectedDate={selectedDate}
                   onDaySelect={handleMobileDaySelect}
+                  periodTimes={settings.periodTimes}
                 />
               ) : (
                 <>
@@ -339,6 +340,7 @@ export default function App() {
                     cellData={cellData}
                     subjects={settings.subjects}
                     onCellClick={handleCellClick}
+                    periodTimes={settings.periodTimes}
                   />
                 </>
               )}

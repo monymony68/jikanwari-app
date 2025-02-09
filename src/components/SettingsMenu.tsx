@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Settings, Subject, SchoolInfo } from "../types";
+import type { Settings, Subject, SchoolInfo, PeriodTime } from "../types";
 import { DEFAULT_SUBJECTS } from "../constants";
 
 type DeletedSubject = Subject & { deletedAt: number };
@@ -21,8 +21,16 @@ export default function SettingsMenu({
     ...settings,
     subjects: settings.subjects.map((subject, index) => ({
       ...subject,
-      order: index, // 明示的な順序を追加
+      order: index,
     })),
+    periodTimes: settings.periodTimes || [
+      { start: "08:50", end: "09:40" },
+      { start: "09:50", end: "10:40" },
+      { start: "10:50", end: "11:40" },
+      { start: "11:50", end: "12:40" },
+      { start: "13:30", end: "14:20" },
+      { start: "14:30", end: "15:20" },
+    ],
   });
 
   const [draggedItem, setDraggedItem] = useState<{
@@ -379,6 +387,20 @@ export default function SettingsMenu({
     setDraggedItem(null);
   };
 
+  // 時限の時刻を更新する関数
+  const handlePeriodTimeChange = (
+    index: number,
+    field: keyof PeriodTime,
+    value: string
+  ) => {
+    setLocalSettings((prev) => ({
+      ...prev,
+      periodTimes: prev.periodTimes.map((time, i) =>
+        i === index ? { ...time, [field]: value } : time
+      ),
+    }));
+  };
+
   return (
     <div className="settings-popup">
       <div className="settings-outer">
@@ -425,6 +447,41 @@ export default function SettingsMenu({
                 }
                 className="settings-input"
               />
+            </div>
+          </section>
+
+          {/* 時限設定セクションを追加 */}
+          <section className="settings-section">
+            <h3 className="settings-section-title">時間設定</h3>
+            <div className="period-times-list">
+              {localSettings.periodTimes.map((period, index) => (
+                <div key={index} className="period-time-item">
+                  <span className="period-time-number">{index + 1}時限目</span>
+                  <div className="time-inputs">
+                    <div className="time-input-group">
+                      <input
+                        type="time"
+                        value={period.start}
+                        onChange={(e) =>
+                          handlePeriodTimeChange(index, "start", e.target.value)
+                        }
+                        className="time-input"
+                      />
+                    </div>
+                    <span>～</span>
+                    <div className="time-input-group">
+                      <input
+                        type="time"
+                        value={period.end}
+                        onChange={(e) =>
+                          handlePeriodTimeChange(index, "end", e.target.value)
+                        }
+                        className="time-input"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 

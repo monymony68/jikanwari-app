@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import type { DayInfo, ClassData, Subject } from "../types";
-import { TIME_SLOTS } from "../constants";
+import type { DayInfo, ClassData, Subject, PeriodTime } from "../types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type MobileTimetableProps = {
@@ -13,6 +12,7 @@ type MobileTimetableProps = {
   currentWeekStart: Date;
   selectedDate: Date;
   onDaySelect: (date: Date) => void;
+  periodTimes: PeriodTime[];
 };
 
 export default function MobileTimetable({
@@ -25,6 +25,7 @@ export default function MobileTimetable({
   currentWeekStart,
   selectedDate,
   onDaySelect,
+  periodTimes,
 }: MobileTimetableProps) {
   // 前回選択していた曜日のインデックスを保持するref
   const previousDayIndex = useRef(0);
@@ -125,14 +126,14 @@ export default function MobileTimetable({
       </div>
 
       <div className="time-slots">
-        {TIME_SLOTS.map((slot) => {
-          const cellKey = `${selectedDay.date}-${slot.period}`;
+        {periodTimes.map((time, index) => {
+          const period = index + 1;
+          const cellKey = `${selectedDay.date}-${period}`;
           const data = cellData[cellKey];
           const subject = data
             ? subjects.find((s) => s.name === data.subject)
             : null;
 
-          // 背景色に基づいてスタイルを決定
           const hasCustomBg = subject && subject.color.bg !== "#FFF";
           const timeStyle = {
             color: hasCustomBg ? "#FFF" : "#666",
@@ -148,18 +149,18 @@ export default function MobileTimetable({
 
           return (
             <div
-              key={slot.period}
+              key={period}
               className="time-slot-card"
-              onClick={() => onCellClick(selectedDay, slot.period)}
+              onClick={() => onCellClick(selectedDay, period)}
               style={{
                 backgroundColor: subject ? subject.color.bg : "#FFF",
                 color: subject ? subject.color.text : "#000",
               }}
             >
               <div className="slot-header" style={slotHeaderStyle}>
-                <div className="period">{slot.period}時間目</div>
+                <div className="period">{period}時間目</div>
                 <div className="time" style={timeStyle}>
-                  {slot.time}
+                  {time.start}~{time.end}
                 </div>
               </div>
               {data ? (

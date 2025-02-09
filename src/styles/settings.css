@@ -43,6 +43,48 @@
 	margin: 0 0 20px;
 }
 
+/* 時間編集 */
+.period-times-list {
+	margin-top: 1rem;
+}
+
+.period-time-item {
+	background: #FFF;
+	border-radius: 8px;
+	padding: 1rem;
+	margin-bottom: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.time-inputs {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.time-input-group {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.time-input-group label {
+	font-size: 0.85rem;
+	color: #666;
+}
+
+.time-input {
+	padding: 0.5rem;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	width: 200px;
+	font-size: 0.8em;
+}
+
+/* 教科編集 */
 .subject-item {
 	background-color: #FFF;
 	border-radius: 4px;
@@ -128,10 +170,6 @@ input.teacher-input {
 	margin-top: 10px;
 }
 
-/*.settings-content .form-group label {
-	font-weight: bold;
-}*/
-
 input.settings-input {
 	border: 1px solid #ddd;
 	border-radius: 4px;
@@ -162,7 +200,7 @@ input.settings-input {
 	border: none;
 }
 
-/*  削除ボタン　元はform.cssのものを引用 */
+/*  削除ボタン 元はform.cssのものを引用 */
 .settings-popup .delete-button {
 	padding: 6px 20px;
 	color: #FFF;
@@ -340,6 +378,10 @@ input.settings-input {
 		width: 85%;
 	}
 
+	.time-input {
+		width: 140px;
+	}
+
 	.sub-subject-item>div {
 		align-items: flex-start;
 	}
@@ -360,6 +402,10 @@ input.settings-input {
 	.settings-outer {
 		width: 90%;
 		padding: 15px;
+	}
+
+	.time-input {
+		width: 100px;
 	}
 
 	.subject-header>div {
@@ -389,6 +435,15 @@ input.settings-input {
 
 	.subject-name-input {
 		width: 100%;
+	}
+
+	.period-time-item {
+		justify-content: space-between;
+		flex-direction: column;
+	}
+
+	.time-input {
+		width: 100px;
 	}
 
 	.color-inputs {
