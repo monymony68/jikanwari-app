@@ -275,6 +275,7 @@ export default function App() {
               setIsMenuOpen(false);
               setIsSettingsOpen(true);
             }}
+            cellData={cellData} // 追加
           />
         )}
 

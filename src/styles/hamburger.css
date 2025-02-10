@@ -55,9 +55,9 @@
 	margin-bottom: 0;
 }
 
-.menu-button {
+.menu-button,
+.google-calendar-button {
 	width: 100%;
-	padding: 15px;
 	background-color: #FFF;
 	border: none;
 	border-radius: 4px;
@@ -67,6 +67,11 @@
 	cursor: pointer;
 	text-align: left;
 	transition: background-color 0.3s;
+	padding: 15px 0 15px 15px;
+}
+
+.google-calendar-button {
+	border: none;
 }
 
 .menu-button:hover {
