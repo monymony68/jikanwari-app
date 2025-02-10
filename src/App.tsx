@@ -6,7 +6,7 @@ import HamburgerMenu from "./components/HamburgerMenu";
 import SettingsMenu from "./components/SettingsMenu";
 import PCTimetable from "./components/PCTimetable";
 import MobileTimetable from "./components/MobileTimetable";
-import { DEFAULT_SUBJECTS } from "./constants";
+import { DEFAULT_SUBJECTS, TIME_SLOTS } from "./constants";
 import type { DayInfo, ClassData, CellData, Settings } from "./types";
 //↓アイコンライブラリ「lucide-react」でカレンダーアイコン、矢印アイコンをインポート
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
@@ -93,6 +93,10 @@ export default function App() {
             className: "1年1組",
           },
           subjects: DEFAULT_SUBJECTS,
+          periodTimes: TIME_SLOTS.map((slot) => ({
+            start: slot.time.split("~")[0],
+            end: slot.time.split("~")[1],
+          })),
         };
   });
 

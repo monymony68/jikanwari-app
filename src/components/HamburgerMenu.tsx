@@ -1,5 +1,5 @@
 import type { ClassData } from "../types";
-import GoogleCalendarButton from "./GoogleCalendarButton";
+/*import GoogleCalendarButton from "./GoogleCalendarButton";*/
 
 interface HamburgerMenuProps {
   onClose: () => void;
@@ -9,8 +9,7 @@ interface HamburgerMenuProps {
 
 export default function HamburgerMenu({
   onClose,
-  onSettingsClick,
-  cellData,
+  onSettingsClick /* , cellData */,
 }: HamburgerMenuProps) {
   return (
     <div className="hamburger-popup">
@@ -29,9 +28,9 @@ export default function HamburgerMenu({
                 設定
               </button>
             </li>
-            <li className="menu-item">
+            {/*<li className="menu-item">
               <GoogleCalendarButton cellData={cellData} />
-            </li>
+            </li>:*/}
             {/* 余裕があったら実装する
             <li className="menu-item">
               <button className="menu-button">時間割のエクスポート</button>
