@@ -26,9 +26,13 @@ export default function ClassForm({
   // メイン教科とサブ教科の分離
   const mainSubjects = subjects.filter((s) => !s.parentId);
   const selectedMainSubject = subjects.find((s) => s.name === formData.subject);
-  const subSubjects = subjects.filter(
+  // サブ教科を持つメイン教科のみフィルタリング
+  const hasSubSubjects = subjects.some(
     (s) => s.parentId === selectedMainSubject?.id
   );
+  const subSubjects = hasSubSubjects
+    ? subjects.filter((s) => s.parentId === selectedMainSubject?.id)
+    : [];
 
   // 教師の自動入力
   useEffect(() => {
@@ -135,10 +139,12 @@ export default function ClassForm({
               onInputChange("subSubject", "");
             }}
             style={{
-              backgroundColor: selectedMainSubject?.color.bg || "#FFF",
+              backgroundColor: formData.subject
+                ? selectedMainSubject?.color.bg || "#FFF"
+                : "#FFF",
               color: formData.subject
                 ? selectedMainSubject?.color.text || "#000"
-                : "#444",
+                : "#666",
               border: selectedMainSubject ? "none" : "1px solid #ddd",
             }}
           >
@@ -150,7 +156,7 @@ export default function ClassForm({
             ))}
           </select>
 
-          {/* サブ教科選択（メイン教科選択時のみ表示） */}
+          {/* サブ教科選択（メイン教科選択時かつサブ教科が存在する場合のみ表示） */}
           {formData.subject && subSubjects.length > 0 && (
             <div className="sub-subject-wrapper">
               <div className="sub-subject-label">サブ教科</div>

@@ -1,4 +1,5 @@
 import type { DayInfo, ClassData, Subject } from "../types";
+import { DEFAULT_SUBJECTS } from "../constants";
 
 type TimetableCellProps = {
   day: DayInfo;
@@ -14,11 +15,38 @@ export default function TimetableCell({
   onClick,
   subjects,
 }: TimetableCellProps) {
-  const subject = subjects.find((s) => s.name === data?.subject);
-  const cellStyle = subject
+  // subjectsが空の場合はDEFAULT_SUBJECTSを使用
+  const availableSubjects = subjects.length > 0 ? subjects : DEFAULT_SUBJECTS;
+
+  // 教科から色情報を取得
+  let cellColor = null;
+  if (data?.subject) {
+    // まずサブ教科を確認
+    if (data.subSubject) {
+      const subSubject = availableSubjects.find(
+        (s) => s.name === data.subSubject
+      );
+      if (subSubject) {
+        cellColor = subSubject.color;
+      }
+    }
+
+    // サブ教科の色が見つからない場合はメイン教科の色を使用
+    if (!cellColor) {
+      const mainSubject = availableSubjects.find(
+        (s) => s.name === data.subject
+      );
+      if (mainSubject) {
+        cellColor = mainSubject.color;
+      }
+    }
+  }
+
+  // セルのスタイルを設定
+  const cellStyle = cellColor
     ? {
-        backgroundColor: subject.color.bg,
-        color: subject.color.text,
+        backgroundColor: cellColor.bg,
+        color: cellColor.text,
         border: "none",
       }
     : {};
