@@ -1,16 +1,33 @@
-import type { ClassData } from "../types";
-/*import GoogleCalendarButton from "./GoogleCalendarButton";*/
+import type { Settings } from "../types";
+import { useState } from "react";
+import LocationSettings from "./LocationSettings";
 
 interface HamburgerMenuProps {
   onClose: () => void;
   onSettingsClick: () => void;
-  cellData: { [key: string]: ClassData };
+  settings: Settings;
+  onSettingsSave: (newSettings: Settings) => void;
 }
 
 export default function HamburgerMenu({
   onClose,
-  onSettingsClick /* , cellData */,
+  onSettingsClick,
+  settings,
+  onSettingsSave,
 }: HamburgerMenuProps) {
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
+
+  // LocationSettings表示時はHamburgerMenuを非表示
+  if (isLocationOpen) {
+    return (
+      <LocationSettings
+        settings={settings}
+        onSettingsSave={onSettingsSave}
+        onClose={() => setIsLocationOpen(false)}
+      />
+    );
+  }
+
   return (
     <div className="hamburger-popup">
       <div className="hamburger-outer">
@@ -28,17 +45,14 @@ export default function HamburgerMenu({
                 設定
               </button>
             </li>
-            {/*<li className="menu-item">
-              <GoogleCalendarButton cellData={cellData} />
-            </li>:*/}
-            {/* 余裕があったら実装する
             <li className="menu-item">
-              <button className="menu-button">時間割のエクスポート</button>
+              <button
+                className="menu-button"
+                onClick={() => setIsLocationOpen(true)}
+              >
+                地域情報
+              </button>
             </li>
-            <li className="menu-item">
-              <button className="menu-button">データの初期化</button>
-            </li>
-						*/}
           </ul>
         </div>
       </div>

@@ -17,20 +17,35 @@ export default function SettingsMenu({
   onClose,
   onBack,
 }: SettingsMenuProps) {
-  const [localSettings, setLocalSettings] = useState<Settings>({
-    ...settings,
-    subjects: settings.subjects.map((subject, index) => ({
-      ...subject,
-      order: index,
-    })),
-    periodTimes: settings.periodTimes || [
-      { start: "08:50", end: "09:40" },
-      { start: "09:50", end: "10:40" },
-      { start: "10:50", end: "11:40" },
-      { start: "11:50", end: "12:40" },
-      { start: "13:30", end: "14:20" },
-      { start: "14:30", end: "15:20" },
-    ],
+  const [localSettings, setLocalSettings] = useState<Settings>(() => {
+    // ローカルストレージから設定を読み込む
+    const saved = localStorage.getItem("settings");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // 教科が空の場合はデフォルト教科を設定
+      if (!parsed.subjects || parsed.subjects.length === 0) {
+        parsed.subjects = DEFAULT_SUBJECTS.map((subject, index) => ({
+          ...subject,
+          order: index,
+        }));
+      }
+      return parsed;
+    }
+    return {
+      ...settings,
+      subjects: settings.subjects.map((subject, index) => ({
+        ...subject,
+        order: index,
+      })),
+      periodTimes: settings.periodTimes || [
+        { start: "08:50", end: "09:40" },
+        { start: "09:50", end: "10:40" },
+        { start: "10:50", end: "11:40" },
+        { start: "11:50", end: "12:40" },
+        { start: "13:30", end: "14:20" },
+        { start: "14:30", end: "15:20" },
+      ],
+    };
   });
 
   const [draggedItem, setDraggedItem] = useState<{
@@ -59,21 +74,18 @@ export default function SettingsMenu({
 
   // メイン教科の追加
   const handleAddSubject = () => {
-    // 既存メイン教科の最大order値を取得（新しい教科を最後尾にするため）
     const maxOrder = Math.max(
       ...localSettings.subjects
         .filter((s) => !s.parentId)
         .map((s) => s.order ?? -1),
       -1
     );
-    // 新しい教科オブジェクトを作成
     const newSubject: Subject = {
-      id: crypto.randomUUID(), //ユニークIDを生成
+      id: crypto.randomUUID(),
       name: "",
       color: { bg: "#CCCCCC", text: "#FFF" },
-      order: maxOrder + 1, //新しい教科を最後尾に追加
+      order: maxOrder + 1,
     };
-    // 設定に新しいメイン教科を追加
     setLocalSettings((prev) => ({
       ...prev,
       subjects: [...prev.subjects, newSubject],
@@ -82,15 +94,11 @@ export default function SettingsMenu({
 
   // サブ教科の追加
   const handleAddSubSubject = (parentId: string) => {
-    //親教科を検索（サブ教科に親教科の色情報を継承させ、親教科との関連付けを明確にするため）
     const parentSubject = localSettings.subjects.find((s) => s.id === parentId);
-
-    //既存のサブ教科をフィルタリングし昇順に並び替え
     const subSubjects = localSettings.subjects
-      .filter((s) => s.parentId === parentId) //指定された親IDを持つサブ教科のみを抽出
-      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)); //order値で昇順にソート
+      .filter((s) => s.parentId === parentId)
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-    //新しいサブ教科オブジェクトを作成
     const newSubject: Subject = {
       id: crypto.randomUUID(),
       name: "",
@@ -105,7 +113,6 @@ export default function SettingsMenu({
           : 0,
     };
 
-    //設定に新しいサブ教科を追加
     setLocalSettings((prev) => ({
       ...prev,
       subjects: [...prev.subjects, newSubject],
@@ -137,7 +144,6 @@ export default function SettingsMenu({
               .map((s) => ({ ...s, deletedAt: timestamp }))
           : [];
 
-        // 重複を防ぐため、同じ名前の教科は上書き
         const filteredDeleted = prevDeleted.filter(
           (d) =>
             d.name !== subjectToDelete.name &&
@@ -177,18 +183,15 @@ export default function SettingsMenu({
     }));
   };
 
-  // 復活機能を追加
+  // 復活機能
   const handleRestoreSubjects = () => {
     if (deletedSubjects.length === 0) {
       alert("復活できる教科がありません");
       return;
     }
 
-    // メイン教科とサブ教科を分類
-    const mainSubjects = [
-      ...new Set(deletedSubjects.filter((s) => !s.parentId)),
-    ];
-    const subSubjects = [...new Set(deletedSubjects.filter((s) => s.parentId))];
+    const mainSubjects = deletedSubjects.filter((s) => !s.parentId);
+    const subSubjects = deletedSubjects.filter((s) => s.parentId);
 
     const confirmMessage = [
       `メイン教科: ${mainSubjects.length}個`,
@@ -199,7 +202,6 @@ export default function SettingsMenu({
 
     if (confirm(`以下の教科を復活させますか？\n${confirmMessage}`)) {
       setLocalSettings((prev) => {
-        // メイン教科を先に復活させ、新しいIDを記録
         const idMap = new Map();
         const restoredMainSubjects = mainSubjects.map((subject) => {
           const newId = crypto.randomUUID();
@@ -211,7 +213,6 @@ export default function SettingsMenu({
           };
         });
 
-        // サブ教科の親IDを新しいIDに更新
         const restoredSubSubjects = subSubjects.map((subject) => ({
           ...subject,
           id: crypto.randomUUID(),
@@ -233,18 +234,20 @@ export default function SettingsMenu({
     }
   };
 
-  // 教科のリセット機能
+  // 教科のリセット
   const handleReset = () => {
     if (confirm("教科をリセットしますか？")) {
-      setLocalSettings((prev) => ({
-        ...prev,
-        subjects: DEFAULT_SUBJECTS.map((s, index) => ({
-          ...s,
+      const resetSettings = {
+        ...localSettings,
+        subjects: DEFAULT_SUBJECTS.map((subject, index) => ({
+          ...subject,
           order: index,
         })),
-      }));
+      };
+      setLocalSettings(resetSettings);
       setDeletedSubjects([]);
       localStorage.removeItem("deleted_subjects");
+      localStorage.setItem("settings", JSON.stringify(resetSettings));
     }
   };
 
@@ -255,16 +258,13 @@ export default function SettingsMenu({
     type: "main" | "sub",
     parentId?: string
   ) => {
-    // サブ教科の場合は必ず親IDを指定
     if (type === "sub" && !parentId) {
       e.preventDefault();
       return;
     }
 
-    // イベント伝播を防止
     e.stopPropagation();
 
-    // カスタムデータを設定
     const dragData = JSON.stringify({
       id,
       type,
@@ -272,17 +272,15 @@ export default function SettingsMenu({
     });
     e.dataTransfer?.setData("text/plain", dragData);
 
-    // ステート更新
     setDraggedItem({ id, type, parentId });
   };
 
-  // ドラッグオーバー時の処理
+  // ドラッグオーバー
   const handleDragOver = (
     e: React.DragEvent,
     type: "main" | "sub",
     parentId?: string
   ) => {
-    // サブ教科の場合、同じ親のアイテムにのみドラッグを許可
     const dragData = JSON.parse(e.dataTransfer?.getData("text/plain") || "{}");
 
     if (type === "sub" && dragData.type === "sub") {
@@ -295,7 +293,7 @@ export default function SettingsMenu({
     e.preventDefault();
   };
 
-  // ドロップ時の処理
+  // ドロップ
   const handleDrop = (
     e: React.DragEvent,
     targetId: string,
@@ -304,7 +302,6 @@ export default function SettingsMenu({
   ) => {
     e.preventDefault();
 
-    // ドラッグデータを安全に取得
     const dragData = JSON.parse(e.dataTransfer?.getData("text/plain") || "{}");
     const {
       id: draggedId,
@@ -312,82 +309,72 @@ export default function SettingsMenu({
       parentId: draggedParentId,
     } = dragData;
 
-    // 同じIDへのドロップは無視
     if (draggedId === targetId) {
       setDraggedItem(null);
       return;
     }
 
-    // メイン教科の並び替え
-    if (draggedType === "main" && targetType === "main") {
-      setLocalSettings((prev) => {
-        const subjects = [...prev.subjects].filter((s) => !s.parentId);
+    setLocalSettings((prev) => {
+      const subjects = [...prev.subjects];
 
-        const draggedIndex = subjects.findIndex((s) => s.id === draggedId);
-        const targetIndex = subjects.findIndex((s) => s.id === targetId);
+      if (draggedType === "main" && targetType === "main") {
+        const mainSubjects = subjects.filter((s) => !s.parentId);
+        const draggedIndex = mainSubjects.findIndex((s) => s.id === draggedId);
+        const targetIndex = mainSubjects.findIndex((s) => s.id === targetId);
 
-        // 要素を移動
-        const [removed] = subjects.splice(draggedIndex, 1);
-        subjects.splice(targetIndex, 0, removed);
+        const [removed] = mainSubjects.splice(draggedIndex, 1);
+        mainSubjects.splice(targetIndex, 0, removed);
 
-        // 順序を更新
-        return {
+        mainSubjects.forEach((s, index) => {
+          s.order = index;
+        });
+
+        const newSettings = {
           ...prev,
-          subjects: [
-            ...subjects.map((s, index) => ({
-              ...s,
-              order: index,
-            })),
-            ...prev.subjects.filter((s) => s.parentId),
-          ],
+          subjects: [...mainSubjects, ...subjects.filter((s) => s.parentId)],
         };
-      });
-    }
+        localStorage.setItem("settings", JSON.stringify(newSettings));
+        return newSettings;
+      }
 
-    // サブ教科の並び替え
-    if (
-      draggedType === "sub" &&
-      targetType === "sub" &&
-      draggedParentId === targetParentId
-    ) {
-      setLocalSettings((prev) => {
-        // 対象の親を持つサブ教科のみをフィルタリング
-        const subSubjects = prev.subjects.filter(
-          (s) => s.parentId === draggedParentId
+      if (
+        draggedType === "sub" &&
+        targetType === "sub" &&
+        draggedParentId === targetParentId
+      ) {
+        const subSubjects = subjects.filter(
+          (s) => s.parentId === targetParentId
         );
-
         const draggedIndex = subSubjects.findIndex((s) => s.id === draggedId);
         const targetIndex = subSubjects.findIndex((s) => s.id === targetId);
 
-        // 要素を移動
         const [removed] = subSubjects.splice(draggedIndex, 1);
         subSubjects.splice(targetIndex, 0, removed);
 
-        // 順序を更新
-        const updatedSubSubjects = subSubjects.map((s, index) => ({
-          ...s,
-          order: index,
-          parentId: draggedParentId,
-        }));
+        subSubjects.forEach((s, index) => {
+          s.order = index;
+        });
 
-        // 他のサブジェクトと結合
-        return {
+        const newSettings = {
           ...prev,
           subjects: [
-            ...prev.subjects.filter(
-              (s) => !s.parentId || s.parentId !== draggedParentId
+            ...subjects.filter(
+              (s) => !s.parentId || s.parentId !== targetParentId
             ),
-            ...updatedSubSubjects,
+            ...subSubjects,
           ],
         };
-      });
-    }
+        localStorage.setItem("settings", JSON.stringify(newSettings));
+        return newSettings;
+      }
 
-    // ドラッグ状態をリセット
+      return prev;
+    });
+
     setDraggedItem(null);
   };
 
-  // 時限の時刻を更新する関数
+  // 時限の時刻を更新
   const handlePeriodTimeChange = (
     index: number,
     field: keyof PeriodTime,
@@ -399,6 +386,12 @@ export default function SettingsMenu({
         i === index ? { ...time, [field]: value } : time
       ),
     }));
+  };
+
+  // 保存処理
+  const handleSave = () => {
+    localStorage.setItem("settings", JSON.stringify(localSettings));
+    onSave(localSettings);
   };
 
   return (
@@ -450,7 +443,7 @@ export default function SettingsMenu({
             </div>
           </section>
 
-          {/* 時限設定セクションを追加 */}
+          {/* 時限設定 */}
           <section className="settings-section">
             <h3 className="settings-section-title">時間設定</h3>
             <div className="period-times-list">
@@ -704,7 +697,7 @@ export default function SettingsMenu({
           <button className="back-button" onClick={onBack}>
             戻る
           </button>
-          <button className="save-button" onClick={() => onSave(localSettings)}>
+          <button className="save-button" onClick={handleSave}>
             保存
           </button>
         </div>

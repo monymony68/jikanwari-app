@@ -60,4 +60,21 @@ export interface Settings {
   schoolInfo: SchoolInfo;
   subjects: Subject[];
   periodTimes: PeriodTime[];
+  location: Location;
 }
+
+export type Location = {
+  prefecture: string;
+  city: string;
+};
+
+export type City = {
+  cityCode: string;
+  cityName: string;
+};
+
+export type Prefecture = {
+  prefCode: string;
+  prefName: string;
+  cities: City[];
+};

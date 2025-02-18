@@ -4,10 +4,11 @@ import CalendarComponent from "./components/Calendar";
 import ClassForm from "./components/ClassForm";
 import HamburgerMenu from "./components/HamburgerMenu";
 import SettingsMenu from "./components/SettingsMenu";
+import WeatherComponent from "./components/WeatherComponent";
 import PCTimetable from "./components/PCTimetable";
 import MobileTimetable from "./components/MobileTimetable";
-import { DEFAULT_SUBJECTS, TIME_SLOTS } from "./constants";
 import type { DayInfo, ClassData, CellData, Settings } from "./types";
+import { DEFAULT_SUBJECTS } from "./constants";
 //↓アイコンライブラリ「lucide-react」でカレンダーアイコン、矢印アイコンをインポート
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -53,7 +54,7 @@ export default function App() {
       const monday = new Date(startDate);
       monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
 
-      return Array.from({ length: 6 }, (_, index) => {
+      return Array.from({ length: 7 }, (_, index) => {
         const date = new Date(monday);
         date.setDate(monday.getDate() + index);
 
@@ -81,23 +82,65 @@ export default function App() {
     const savedCellData = localStorage.getItem(STORAGE_KEYS.CELL_DATA);
     return savedCellData ? JSON.parse(savedCellData) : {};
   });
+
   // デフォルトの科目で初期設定を作成
   const [settings, setSettings] = useState<Settings>(() => {
-    const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    return savedSettings
-      ? JSON.parse(savedSettings)
-      : {
+    // ローカルストレージから設定を読み込む
+    const savedData = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+    if (savedData) {
+      try {
+        const parsedSettings = JSON.parse(savedData);
+        // 各設定値の存在確認と初期値の設定
+        return {
           schoolInfo: {
-            schoolName: "福井高校",
-            department: "普通科",
-            className: "1年1組",
+            schoolName: parsedSettings.schoolInfo?.schoolName || "",
+            department: parsedSettings.schoolInfo?.department || "",
+            className: parsedSettings.schoolInfo?.className || "",
           },
-          subjects: DEFAULT_SUBJECTS,
-          periodTimes: TIME_SLOTS.map((slot) => ({
-            start: slot.time.split("~")[0],
-            end: slot.time.split("~")[1],
-          })),
+          subjects:
+            parsedSettings.subjects?.length > 0
+              ? parsedSettings.subjects
+              : DEFAULT_SUBJECTS,
+          periodTimes: parsedSettings.periodTimes || [
+            { start: "08:50", end: "09:40" },
+            { start: "09:50", end: "10:40" },
+            { start: "10:50", end: "11:40" },
+            { start: "11:50", end: "12:40" },
+            { start: "13:30", end: "14:20" },
+            { start: "14:30", end: "15:20" },
+            { start: "15:30", end: "16:20" },
+          ],
+          location: {
+            prefecture: parsedSettings.location?.prefecture || "",
+            city: parsedSettings.location?.city || "",
+          },
         };
+      } catch (error) {
+        console.error("設定の読み込みに失敗しました:", error);
+      }
+    }
+
+    // 初期値を返す
+    return {
+      schoolInfo: {
+        schoolName: "",
+        department: "",
+        className: "",
+      },
+      subjects: DEFAULT_SUBJECTS,
+      periodTimes: [
+        { start: "08:50", end: "09:40" },
+        { start: "09:50", end: "10:40" },
+        { start: "10:50", end: "11:40" },
+        { start: "11:50", end: "12:40" },
+        { start: "13:30", end: "14:20" },
+        { start: "14:30", end: "15:20" },
+      ],
+      location: {
+        prefecture: "",
+        city: "",
+      },
+    };
   });
 
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
@@ -139,6 +182,23 @@ export default function App() {
       selectedDate.toISOString()
     );
   }, [selectedDate]);
+
+  useEffect(() => {
+    const ensureSevenPeriods = (currentSettings: Settings): Settings => {
+      if (currentSettings.periodTimes.length < 7) {
+        return {
+          ...currentSettings,
+          periodTimes: [
+            ...currentSettings.periodTimes,
+            { start: "15:30", end: "16:20" },
+          ],
+        };
+      }
+      return currentSettings;
+    };
+
+    setSettings((prev) => ensureSevenPeriods(prev));
+  }, []);
 
   const handleDateSelect = useCallback((date: Date) => {
     setSelectedDate(date);
@@ -193,11 +253,19 @@ export default function App() {
     }
   };
 
+  // handleSettingsSaveの修正
   const handleSettingsSave = (newSettings: Settings) => {
-    setSettings(newSettings);
-    setIsSettingsOpen(false);
-    // 設定が変更された後の時間割データを更新
-    updateTimetableWithNewSettings(newSettings);
+    try {
+      // 設定を保存
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
+      setSettings(newSettings);
+      setIsSettingsOpen(false);
+
+      // 設定が変更された後の時間割データを更新
+      updateTimetableWithNewSettings(newSettings);
+    } catch (error) {
+      console.error("設定の保存に失敗しました:", error);
+    }
   };
 
   // 設定変更後の時間割更新処理
@@ -279,7 +347,8 @@ export default function App() {
               setIsMenuOpen(false);
               setIsSettingsOpen(true);
             }}
-            cellData={cellData} // 追加
+            settings={settings}
+            onSettingsSave={handleSettingsSave}
           />
         )}
 
@@ -297,12 +366,15 @@ export default function App() {
         )}
 
         {/* タイトル */}
-        <div className="title">
-          <h1 className="title-text">
-            {settings.schoolInfo.schoolName} {settings.schoolInfo.department}
-            <br />
-            {settings.schoolInfo.className} 時間割
-          </h1>
+        <div className="title-section">
+          <div className="title">
+            <h1 className="title-text">
+              {settings.schoolInfo.schoolName} {settings.schoolInfo.department}
+              <br />
+              {settings.schoolInfo.className} 時間割
+            </h1>
+          </div>
+          <WeatherComponent settings={settings} />
         </div>
 
         {/* 時間割テーブル */}
