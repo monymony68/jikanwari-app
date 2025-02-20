@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import type { DayInfo, ClassData, Subject, PeriodTime } from "../types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -183,7 +184,7 @@ export default function MobileTimetable({
                 </div>
               ) : (
                 <div className="empty-slot">
-                  <div>+</div>
+                  <Plus />
                 </div>
               )}
             </div>
