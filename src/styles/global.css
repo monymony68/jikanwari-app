@@ -1,7 +1,12 @@
+:root {
+	--primary-color: #FB8F55;
+}
+
 body {
 	padding: 0;
 	margin: 0;
 }
+
 
 * {
 	font-family: sans-serif;

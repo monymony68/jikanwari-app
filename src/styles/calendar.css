@@ -53,7 +53,7 @@
     font-weight: bold;
     width: 37%;
     text-align: center;
-    color: #FB8F55;
+    color: var(--primary-color);
 }
 
 .calendar-header {
@@ -90,7 +90,7 @@
 .calendar-subtitle-year-label {
     font-size: 22px;
     font-weight: bold;
-    color: #FB8F55;
+    color: var(--primary-color);
     border: 1px solid #FB8F55;
     border-radius: 6px;
     padding: 0.2rem 1rem;
@@ -116,7 +116,7 @@
 }
 
 .calendar-subtitle-month.current-month {
-    color: #FB8F55;
+    color: var(--primary-color);
 }
 
 .calendar-subtitle-month:hover {
@@ -128,7 +128,7 @@
 }
 
 .calendar-subtitle-month.selected::after {
-    background-color: #fb8f55;
+    background-color: var(--primary-color);
     width: 100%;
     border-radius: 6px;
 }
@@ -142,7 +142,7 @@
 }
 
 .calendar-weekday {
-    color: #FB8F55;
+    color: var(--primary-color);
 }
 
 .calendar-grid {
@@ -169,13 +169,13 @@
 .calendar-day-today {
     border: none;
     font-weight: bold;
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
     color: white;
 }
 
 .calendar-day:hover {
     background-color: #FFF;
-    color: #FB8F55;
+    color: var(--primary-color);
 
 }
 

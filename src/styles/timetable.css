@@ -15,7 +15,7 @@
 }
 
 .day-header {
-    color: #FB8F55;
+    color: var(--primary-color);
     border: 2px solid #FB8F55;
     border-radius: 6px;
     padding: 7px 10px;
@@ -27,11 +27,11 @@
 
 .day-header.today {
     color: #FFF;
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
 }
 
 .time-slot-container {
-    color: #FB8F55;
+    color: var(--primary-color);
     font-weight: bold;
     border: 2px solid #FB8F55;
     border-radius: 6px;

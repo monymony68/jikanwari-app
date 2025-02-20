@@ -24,7 +24,7 @@
 .weather-title {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #FB8F55;
+    color: var(--primary-color);
     margin: 0;
 }
 
@@ -41,7 +41,7 @@
 
 .toggle-line {
     position: absolute;
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
     border-radius: 2px;
 }
 
