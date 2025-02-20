@@ -319,7 +319,7 @@ export default function App() {
           className="calendar-icon"
           onClick={() => setIsCalendarOpen(!isCalendarOpen)}
         >
-          <Calendar />
+          <Calendar size={24} />
         </div>
 
         {/* カレンダーコンポーネント */}
@@ -334,8 +334,6 @@ export default function App() {
 
         {/* ハンバーガーメニュー */}
         <div className="hamburger" onClick={() => setIsMenuOpen(true)}>
-          <span className="hamburger-line" />
-          <span className="hamburger-line" />
           <span className="hamburger-line" />
         </div>
 
