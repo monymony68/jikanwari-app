@@ -8,6 +8,15 @@
     position: relative;
     cursor: pointer;
     max-width: 80px;
+
+    &:hover {
+        background-color: var(--primary-color);
+
+        .plus-horizontal,
+        .plus-vertical {
+            background-color: #FFF;
+        }
+    }
 }
 
 .plus-horizontal {
@@ -17,7 +26,7 @@
     transform: translateX(-50%);
     width: 20px;
     height: 1px;
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
 }
 
 .plus-vertical {
@@ -27,7 +36,7 @@
     transform: translateY(-50%);
     width: 1px;
     height: 20px;
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
 }
 
 /* Cell Content Styles */

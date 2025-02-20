@@ -1,122 +1,147 @@
-body {
-    padding: 0;
-    margin: 0;
+:root {
+	--primary-color: #FB8F55;
+	--background-color-first: #FCF1D7;
+  --background-color-second: #F6CD9B;
+  --background-color-third: #FFE4CD;
+	--title-text-color: #474747;
 }
 
+body {
+	padding: 0;
+	margin: 0;
+}
+
+
 * {
-    font-family: sans-serif;
+	font-family: 'Yusei Magic', sans-serif;
 }
 
 .wrapper {
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    background-color: #FCF1D7;
-    overflow: auto;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	background: linear-gradient(45deg, var(--background-color-first), var(--background-color-second), var(--background-color-third));
+	overflow: auto;
+	animation: gradient 3s ease infinite;
+	-webkit-animation: gradient 3s ease infinite;
 }
 
 .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 1rem 2rem;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1rem 1rem 2rem;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
 }
 
 /* Title Styles */
 .title {
-    text-align: center;
-    margin-bottom: 2.5rem;
+	text-align: center;
+	margin-bottom: 2.5rem;
 }
 
 .title-text {
-    font-size: 1.5rem;
-    font-weight: bold;
-    line-height: 1.5;
-
+	color: var(--title-text-color);
+	font-size: 2rem;
+	font-weight: bold;
+	line-height: 1.5;
 }
 
 /* スクロールバー非表示 */
 ::-webkit-scrollbar {
-    display: none;
+	display: none;
 }
 
 /* Githubリンク */
 .github-link {
-    position: fixed;
-    right: 10px;
-    bottom: 20px;
-    z-index: 100;
-    cursor: pointer;
+	position: fixed;
+	right: 10px;
+	bottom: 20px;
+	z-index: 100;
+	cursor: pointer;
 }
 
 .github-icon {
-    width: 70px;
-    height: 70px;
-    transition: opacity 0.3s;
+	width: 70px;
+	height: 70px;
+	transition: opacity 0.3s;
 }
 
 .github-icon:hover {
-    opacity: 0.7;
+	opacity: 0.7;
 }
 
 .sp-only {
-    display: none;
+	display: none;
 }
 
 
 
 @media (max-width: 991.98px) {
+	.timetable-container {
+		position: relative;
+		height: auto;
+		min-height: 0;
+		overflow: visible;
+	}
 
-    .timetable-container {
-        position: relative;
-        height: auto;
-        min-height: 0;
-        overflow: visible;
-    }
+	.github-link {
+		position: absolute;
+		right: 20px;
+		bottom: -70px;
+	}
 
-    .github-link {
-        position: absolute;
-        right: 20px;
-        bottom: -70px;
-    }
+	.github-icon {
+		width: 70px;
+		height: 70px;
+	}
 
-    .github-icon {
-        width: 70px;
-        height: 70px;
-    }
+	.sp-only {
+		display: inline;
+	}
 
-    .sp-only {
-        display: inline;
-    }
-
-    .pc-only {
-        display: none;
-    }
+	.pc-only {
+		display: none;
+	}
 
 }
 
 /* レスポンシブ切り替え用 */
 .pc-timetable {
-    display: none;
+	display: none;
 }
 
 .mobile-timetable {
-    display: none;
+	display: none;
 }
 
 @media (min-width: 769px) {
-    .pc-timetable {
-        display: block;
-    }
+	.pc-timetable {
+		display: block;
+	}
 }
 
 @media (max-width: 768px) {
-    .mobile-timetable {
-        display: block;
-    }
+	.mobile-timetable {
+		display: block;
+	}
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+    background-size: 200% 200%;
+  }
+  50% {
+    background-position: 100% 50%;
+    background-size: 300% 300%;
+  }
+  100% {
+    background-position: 0% 50%;
+    background-size: 200% 200%;
+  }
 }
