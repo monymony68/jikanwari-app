@@ -1,5 +1,9 @@
 :root {
 	--primary-color: #FB8F55;
+	--background-color-first: #FCF1D7;
+  --background-color-second: #F6CD9B;
+  --background-color-third: #FFE4CD;
+	--title-text-color: #474747;
 }
 
 body {
@@ -9,7 +13,7 @@ body {
 
 
 * {
-	font-family: sans-serif;
+	font-family: 'Yusei Magic', sans-serif;
 }
 
 .wrapper {
@@ -17,8 +21,10 @@ body {
 	height: 100vh;
 	margin: 0;
 	padding: 0;
-	background-color: #FCF1D7;
+	background: linear-gradient(45deg, var(--background-color-first), var(--background-color-second), var(--background-color-third));
 	overflow: auto;
+	animation: gradient 3s ease infinite;
+	-webkit-animation: gradient 3s ease infinite;
 }
 
 .container {
@@ -34,13 +40,13 @@ body {
 
 /* Title Styles */
 .title {
-	font-family: 'Yusei Magic', sans-serif;
 	text-align: center;
 	margin-bottom: 2.5rem;
 }
 
 .title-text {
-	font-size: 1.5rem;
+	color: var(--title-text-color);
+	font-size: 2rem;
 	font-weight: bold;
 	line-height: 1.5;
 }
@@ -123,4 +129,19 @@ body {
 	.mobile-timetable {
 		display: block;
 	}
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+    background-size: 200% 200%;
+  }
+  50% {
+    background-position: 100% 50%;
+    background-size: 300% 300%;
+  }
+  100% {
+    background-position: 0% 50%;
+    background-size: 200% 200%;
+  }
 }
