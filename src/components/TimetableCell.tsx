@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import type { DayInfo, ClassData, Subject } from "../types";
 import { DEFAULT_SUBJECTS } from "../constants";
 
@@ -75,8 +76,7 @@ export default function TimetableCell({
         </div>
       ) : (
         <>
-          <div className="plus-horizontal" />
-          <div className="plus-vertical" />
+          <Plus className="plus-icon" />
         </>
       )}
     </td>

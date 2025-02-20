@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import { type ChangeEvent, useEffect } from "react";
 import type { ClassData, DayInfo, Subject } from "../types";
 
@@ -112,8 +113,7 @@ export default function ClassForm({
     <div className="dialog">
       <div className="dialog-content">
         <button className="close-button" onClick={onClose}>
-          <div className="close-button-line1" />
-          <div className="close-button-line2" />
+          <X />
         </button>
 
         <div className="dialog-header">
