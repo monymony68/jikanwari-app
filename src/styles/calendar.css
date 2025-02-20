@@ -91,11 +91,11 @@
     font-size: 22px;
     font-weight: bold;
     color: var(--primary-color);
-    border: 1px solid #FB8F55;
+    border: 1px solid var(--primary-color);
     border-radius: 6px;
     padding: 0.2rem 1rem;
     margin-bottom: .8em;
-    width: 5.5rem;
+    width: 7rem;
     text-align: center;
 }
 
@@ -201,5 +201,4 @@
         padding: 1rem 0.4rem 1.2rem;
         font-size: 22px;
     }
-
 }

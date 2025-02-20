@@ -370,10 +370,13 @@ export default function App() {
               {settings.schoolInfo.schoolName || settings.schoolInfo.department ? (
                 <>
                   {settings.schoolInfo.schoolName} {settings.schoolInfo.department}
-                  <br />時間割
+                  <br />
+                  {settings.schoolInfo.className} 時間割
                 </>
               ) : (
-                "時間割"
+                <>
+                  {settings.schoolInfo.className} 時間割
+                </>
               )}     
             </h1>
           </div>
