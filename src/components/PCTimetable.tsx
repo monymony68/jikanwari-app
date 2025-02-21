@@ -18,49 +18,47 @@ export default function PCTimetable({
   periodTimes,
 }: PCTimetableProps) {
   return (
-    <div className="content">
-      <div className="timetable-container">
-        <table className="timetable">
-          <thead>
-            <tr>
-              <th />
+    <div className="timetable-container">
+      <table className="timetable">
+        <thead>
+          <tr>
+            <th />
+            {weekDays.map((day) => (
+              <th
+                key={day.day}
+                className={`day-header ${day.isToday ? "today" : ""}`}
+              >
+                {day.date}
+                <br />({day.day})
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {periodTimes.map((time, index) => (
+            <tr key={index + 1}>
+              <td className="time-slot-container">
+                <div className="period-number">{index + 1}</div>
+                <div className="period-time">
+                  {time.start}
+                  <br />~<br />
+                  {time.end}
+                </div>
+              </td>
               {weekDays.map((day) => (
-                <th
-                  key={day.day}
-                  className={`day-header ${day.isToday ? "today" : ""}`}
-                >
-                  {day.date}
-                  <br />({day.day})
-                </th>
+                <TimetableCell
+                  key={`${index + 1}-${day.day}`}
+                  day={day}
+                  period={index + 1}
+                  data={cellData[`${day.date}-${index + 1}`]}
+                  onClick={() => onCellClick(day, index + 1)}
+                  subjects={subjects}
+                />
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {periodTimes.map((time, index) => (
-              <tr key={index + 1}>
-                <td className="time-slot-container">
-                  <div className="period-number">{index + 1}</div>
-                  <div className="period-time">
-                    {time.start}
-                    <br />~<br />
-                    {time.end}
-                  </div>
-                </td>
-                {weekDays.map((day) => (
-                  <TimetableCell
-                    key={`${index + 1}-${day.day}`}
-                    day={day}
-                    period={index + 1}
-                    data={cellData[`${day.date}-${index + 1}`]}
-                    onClick={() => onCellClick(day, index + 1)}
-                    subjects={subjects}
-                  />
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
