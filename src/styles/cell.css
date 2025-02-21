@@ -8,16 +8,38 @@
     position: relative;
     cursor: pointer;
     max-width: 80px;
+
+    &:hover {
+        background-color: var(--primary-color);
+
+        .cell-detail {
+            color: #FFF;
+        }
+
+        .plus-icon {
+            color: #FFF;
+            animation: rotate .4s ease;
+            -webkit-animation: rotate .4s ease;
+}
+    }
 }
 
-.plus-horizontal {
+.plus-icon {
+    color: var(--primary-color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* .plus-horizontal {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translateX(-50%);
     width: 20px;
     height: 1px;
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
 }
 
 .plus-vertical {
@@ -27,8 +49,8 @@
     transform: translateY(-50%);
     width: 1px;
     height: 20px;
-    background-color: #FB8F55;
-}
+    background-color: var(--primary-color);
+} */
 
 /* Cell Content Styles */
 .cell-content {
@@ -47,7 +69,7 @@
 }
 
 .cell-detail {
-    color: #FFF;
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
     font-weight: bold;
     font-size: 120%;
@@ -55,4 +77,17 @@
 
 .cell-detail:last-of-type {
     margin-bottom: 0;
+}
+
+@keyframes rotate {
+    /* 0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    } */
+    to {
+        transform: translate(-50%, -50%) rotate(90deg);
+        -webkit-transform: translate(-50%, -50%) rotate(90deg);
+        -moz-transform: translate(-50%, -50%) rotate(90deg);
+        -ms-transform: translate(-50%, -50%) rotate(90deg);
+        -o-transform: translate(-50%, -50%) rotate(90deg);
+}
 }

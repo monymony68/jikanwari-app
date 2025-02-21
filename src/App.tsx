@@ -319,7 +319,7 @@ export default function App() {
           className="calendar-icon"
           onClick={() => setIsCalendarOpen(!isCalendarOpen)}
         >
-          <Calendar />
+          <Calendar size={24} />
         </div>
 
         {/* カレンダーコンポーネント */}
@@ -334,8 +334,6 @@ export default function App() {
 
         {/* ハンバーガーメニュー */}
         <div className="hamburger" onClick={() => setIsMenuOpen(true)}>
-          <span className="hamburger-line" />
-          <span className="hamburger-line" />
           <span className="hamburger-line" />
         </div>
 
@@ -369,9 +367,17 @@ export default function App() {
         <div className="title-section">
           <div className="title">
             <h1 className="title-text">
-              {settings.schoolInfo.schoolName} {settings.schoolInfo.department}
-              <br />
-              {settings.schoolInfo.className} 時間割
+              {settings.schoolInfo.schoolName || settings.schoolInfo.department ? (
+                <>
+                  {settings.schoolInfo.schoolName} {settings.schoolInfo.department}
+                  <br />
+                  {settings.schoolInfo.className} 時間割
+                </>
+              ) : (
+                <>
+                  {settings.schoolInfo.className} 時間割
+                </>
+              )}     
             </h1>
           </div>
           <WeatherComponent settings={settings} />

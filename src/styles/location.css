@@ -14,7 +14,7 @@
 
 .select-group>p {
     margin: 0 0 0.5rem;
-    color: #fb8f55;
+    color: var(--primary-color);
     font-size: 1.17em;
     font-weight: bold;
 }

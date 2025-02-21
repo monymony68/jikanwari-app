@@ -6,26 +6,32 @@
     border-radius: 50%;
     padding: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 85px;
-    height: 85px;
+    width: 54px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
     padding: 12px;
+    cursor: pointer;
 }
 
 .calendar-icon svg {
-    width: 45px;
-    height: 45px;
+    width: 30px;
+    height: 30px;
+
+    @media (max-width: 767.98px) {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 .hamburger {
     position: absolute;
     right: 1rem;
     top: 1rem;
-    width: 85px;
-    height: 85px;
+    width: 54px;
+    height: 54px;
     background-color: #FFF;
     border-radius: 50%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -41,10 +47,45 @@
 
 .hamburger-line {
     display: block;
-    width: 32px;
+    position: relative;
+    width: 28px;
     height: 2px;
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
     transition: all 0.5s ease;
+
+    &::before {
+        content: "";
+        display: block;
+        width: 28px;
+        height: 2px;
+        background-color: var(--primary-color);
+        position: absolute;
+        top: -8px;
+        left: 0;
+    }
+
+    &::after {
+        content: "";
+        display: block;
+        width: 28px;
+        height: 2px;
+        background-color: var(--primary-color);
+        position: absolute;
+        top: 8px;
+        left: 0;
+    }
+
+    @media (max-width: 767.98px) {
+        width: 24px;
+
+        &::before {
+            width: 24px;
+        }
+
+        &::after {
+            width: 24px;
+        }
+    }
 }
 
 .content {
@@ -52,7 +93,7 @@
 }
 
 .week-button {
-    background-color: #FB8F55;
+    background-color: var(--primary-color);
     color: #FFF;
     border: none;
     border-radius: 50%;
@@ -70,6 +111,11 @@
     line-height: 1.2;
     padding: 5px;
     z-index: 1;
+
+    &:hover {
+        animation: hover-scale 0.3s ease-in-out forwards;
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
 }
 
 .week-button-text {
@@ -90,54 +136,17 @@
     right: 5px;
 }
 
-@media (max-width: 767.98px) {
-    .calendar-icon {
-        width: 55px;
-        height: 55px;
-        padding: 20px;
+@keyframes hover-scale {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
-    .calendar-icon svg {
-        width: 40px;
-        height: 40px;
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
-
-    .hamburger {
-        width: 55px;
-        height: 55px;
-        padding: 12px;
-    }
-
-    .hamburger-line {
-        width: 24px;
-        height: 2px;
-    }
-}
-
-@media (max-width: 575px) {
-    .calendar-icon {
-        width: 35px;
-        height: 35px;
-        padding: 25px;
-        left: 0.3rem;
-        top: 1.5rem;
-    }
-
-    .calendar-icon svg {
-        width: 40px;
-        height: 40px;
-    }
-
-    .hamburger {
-        width: 47px;
-        height: 47px;
-        padding: 14px;
-        right: 0.3rem;
-        top: 1.6rem;
-    }
-
-    .hamburger-line {
-        width: 30px;
-        height: 2px;
+    100% {
+        transform: scale(1.1);
+        box-shadow: 0 5px 7px rgba(0, 0, 0, 0.12);
     }
 }
