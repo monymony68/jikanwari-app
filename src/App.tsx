@@ -380,48 +380,46 @@ export default function App() {
         {/* 時間割テーブル */}
         <div className="content">
           <div className="timetable-container">
-            <div className="content">
-              {isMobile ? (
-                <MobileTimetable
+            {isMobile ? (
+              <MobileTimetable
+                weekDays={weekDays}
+                cellData={cellData}
+                subjects={settings.subjects}
+                onCellClick={handleCellClick}
+                onPrevWeek={handlePrevWeek}
+                onNextWeek={handleNextWeek}
+                currentWeekStart={currentWeekStart}
+                selectedDate={selectedDate}
+                onDaySelect={handleMobileDaySelect}
+                periodTimes={settings.periodTimes}
+              />
+            ) : (
+              <>
+                <button
+                  className="week-button prev-week-button"
+                  onClick={handlePrevWeek}
+                >
+                  <ChevronLeft size={24} />
+                  <span className="week-button-text">前の週</span>
+                </button>
+
+                <button
+                  className="week-button next-week-button"
+                  onClick={handleNextWeek}
+                >
+                  <ChevronRight size={24} />
+                  <span className="week-button-text">次の週</span>
+                </button>
+
+                <PCTimetable
                   weekDays={weekDays}
                   cellData={cellData}
                   subjects={settings.subjects}
                   onCellClick={handleCellClick}
-                  onPrevWeek={handlePrevWeek}
-                  onNextWeek={handleNextWeek}
-                  currentWeekStart={currentWeekStart}
-                  selectedDate={selectedDate}
-                  onDaySelect={handleMobileDaySelect}
                   periodTimes={settings.periodTimes}
                 />
-              ) : (
-                <>
-                  <button
-                    className="week-button prev-week-button"
-                    onClick={handlePrevWeek}
-                  >
-                    <ChevronLeft size={24} />
-                    <span className="week-button-text">前の週</span>
-                  </button>
-
-                  <button
-                    className="week-button next-week-button"
-                    onClick={handleNextWeek}
-                  >
-                    <ChevronRight size={24} />
-                    <span className="week-button-text">次の週</span>
-                  </button>
-
-                  <PCTimetable
-                    weekDays={weekDays}
-                    cellData={cellData}
-                    subjects={settings.subjects}
-                    onCellClick={handleCellClick}
-                    periodTimes={settings.periodTimes}
-                  />
-                </>
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
 
